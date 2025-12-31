@@ -1,2 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Queens.Controllers;
+var controller = new PageController(null);
+var page = await controller.LoadGame();
+await controller.DisposeAsync();
+Console.WriteLine(page);
