@@ -5,6 +5,7 @@ namespace Queens.Variables;
 internal sealed class Cell(ILogger<Cell> logger, ushort id) : ICell
 {
 
+    private readonly ILogger<Cell> _logger = logger;
 
     private bool? _isQueen = null;
 

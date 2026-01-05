@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 using Microsoft.Playwright;
@@ -10,6 +11,9 @@ internal static partial class RegexPatterns
 {
     [GeneratedRegex(@"of color\s*([^,]+)", RegexOptions.IgnoreCase)]
     internal static partial Regex AriaLabelRegex();
+
+    [GeneratedRegex(@"cell-color-(\d+)", RegexOptions.IgnoreCase)]
+    internal static partial Regex CellColorIdRegex();
 }
 
 internal readonly record struct ColorData
@@ -29,12 +33,19 @@ internal readonly record struct StartState
     internal int SideLength { get; init; }
     internal ColorData[] Colors { get; init; }
     internal int[] CellColors { get; init; }
+
+    public override string ToString()
+    {
+        return $"SideLength: {SideLength}, Colors: [{string.Join(", ", Colors)}], CellColors: [{string.Join(", ", CellColors)}]";
+    }
 }
 
 internal sealed class PageController(ILogger<PageController>? logger) : IPageController, IAsyncDisposable
 {
 
+    private readonly ILogger<PageController>? _logger = logger;
     private readonly Regex _ariaLabelRegex = RegexPatterns.AriaLabelRegex();
+    private readonly Regex _cellColorIdRegex = RegexPatterns.CellColorIdRegex();
     private bool _disposed;
     private IPlaywright _playwright = null!;
     private IBrowser _browser = null!;
@@ -53,19 +64,13 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
             UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         });
         _page = await _context.NewPageAsync();
+
         await _page.GotoAsync("https://www.linkedin.com/games/view/queens/desktop");
-        var startButton = await _page.WaitForSelectorAsync("#launch-footer-start-button");
-
-        if (startButton is null)
-        {
-            //logger.LogCritical("Start button not found");
-            throw new InvalidOperationException("Start button not found");
-        }
-
+        var startButton = _page.GetByRole(AriaRole.Button).Filter(new() { HasTextString = "Start" });
         await startButton.ClickAsync();
 
         var tableCells = await _page.QuerySelectorAllAsync("div.queens-cell-with-border");
-        var colors = new Dictionary<int, ColorData>();
+        var colors = new ConcurrentDictionary<int, ColorData>();
 
         var cellsInfo = await Task.WhenAll(
             tableCells.Select(async (cell) =>
@@ -78,19 +83,17 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
                 string?[] values = await Task.WhenAll(cellIdx, cellClass, ariaLabel, colorValue);
 
                 if (!int.TryParse(values[0], out var cellId)) throw new InvalidOperationException("Failed to parse cell index");
-                if (!int.TryParse(values[1]?.Split("-").Last().Trim(), out var colorId)) throw new InvalidOperationException("Failed to parse cell color");
+                var colorIdText = values[1]?.Match(_cellColorIdRegex)?.Groups[1]?.Value.Trim();
+                if (!int.TryParse(colorIdText, out var colorId)) throw new InvalidOperationException("Failed to parse cell color");
                 var colorName = values[2]?.Match(_ariaLabelRegex)?.Groups[1]?.Value.Trim() ?? throw new InvalidOperationException("Failed to parse color name");
                 var colorRGB = values[3] ?? throw new InvalidOperationException("Failed to parse color value");
 
-                if (!colors.ContainsKey(colorId))
+                colors.TryAdd(colorId, new ColorData
                 {
-                    colors[colorId] = new ColorData
-                    {
-                        Id = colorId,
-                        Name = colorName,
-                        RGB = colorRGB
-                    };
-                }
+                    Id = colorId,
+                    Name = colorName,
+                    RGB = colorRGB
+                });
 
                 return (cellId, colorId);
             })
