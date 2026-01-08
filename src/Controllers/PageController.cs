@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 using Microsoft.Playwright;
 
+using Queens.Data;
 using Queens.Interfaces;
 
 namespace Queens.Controllers;
@@ -14,30 +15,6 @@ internal static partial class RegexPatterns
 
     [GeneratedRegex(@"cell-color-(\d+)", RegexOptions.IgnoreCase)]
     internal static partial Regex CellColorIdRegex();
-}
-
-internal readonly record struct ColorData
-{
-    internal int Id { get; init; }
-    internal string Name { get; init; }
-    internal string RGB { get; init; }
-
-    public override string ToString()
-    {
-        return $"{Name}({Id}): {RGB}";
-    }
-}
-
-internal readonly record struct StartState
-{
-    internal int SideLength { get; init; }
-    internal ColorData[] Colors { get; init; }
-    internal int[] CellColors { get; init; }
-
-    public override string ToString()
-    {
-        return $"SideLength: {SideLength}, Colors: [{string.Join(", ", Colors)}], CellColors: [{string.Join(", ", CellColors)}]";
-    }
 }
 
 internal sealed class PageController(ILogger<PageController>? logger) : IPageController, IAsyncDisposable
@@ -52,7 +29,7 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
     private IBrowserContext _context = null!;
     private IPage _page = null!;
 
-    public async Task<StartState> LoadGame()
+    public async Task<GameDefinition> GetGameDefinition()
     {
         _playwright = await Playwright.CreateAsync();
         _browser = await _playwright.Chromium.LaunchAsync(new()
@@ -99,7 +76,7 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
             })
         );
 
-        StartState state = new()
+        GameDefinition state = new()
         {
             SideLength = (int)Math.Sqrt(cellsInfo.Length),
             Colors = [.. colors.Values],

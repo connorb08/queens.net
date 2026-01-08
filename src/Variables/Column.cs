@@ -2,7 +2,7 @@ using Queens.Enums;
 
 namespace Queens.Variables;
 
-internal sealed class Column : CellGroup
+internal sealed class Column(ILogger<Column> logger) : CellGroup(logger)
 {
     public override CellGrouping Grouping => CellGrouping.Column;
 }
