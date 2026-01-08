@@ -12,34 +12,20 @@ internal interface IFactory
     public Row CreateRow();
     public Column CreateColumn();
     public Color CreateColor();
-    public IGraph CreateGraph(GameDefinition gameDefinition);
+    public IGraph CreateGraph();
     public ICell CreateCell(ushort id, Row row, Column column, Color color);
 }
 
 internal class Factory(IServiceProvider serviceProvider) : IFactory
 {
-    public IGraph CreateGraph(GameDefinition gameDefinition)
-    {
-        return new Graph(serviceProvider.GetRequiredService<ILogger<IGraph>>(), this, gameDefinition);
-    }
+    public IGraph CreateGraph() => serviceProvider.GetRequiredService<IGraph>();
 
     public ICell CreateCell(ushort id, Row row, Column column, Color color)
     {
         return new Cell(serviceProvider.GetRequiredService<ILogger<Cell>>(), id, row, column, color);
     }
 
-    public Row CreateRow()
-    {
-        return new Row(serviceProvider.GetRequiredService<ILogger<Row>>());
-    }
-
-    public Column CreateColumn()
-    {
-        return new Column(serviceProvider.GetRequiredService<ILogger<Column>>());
-    }
-
-    public Color CreateColor()
-    {
-        return new Color(serviceProvider.GetRequiredService<ILogger<Color>>());
-    }
+    public Row CreateRow() => serviceProvider.GetRequiredService<Row>();
+    public Column CreateColumn() => serviceProvider.GetRequiredService<Column>();
+    public Color CreateColor() => serviceProvider.GetRequiredService<Color>();
 }

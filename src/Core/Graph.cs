@@ -5,7 +5,7 @@ using Queens.Variables;
 
 namespace Queens.Core;
 
-internal sealed class Graph(ILogger<IGraph> logger, IFactory factory, GameDefinition gameDefinition) : IGraph
+internal sealed class Graph(ILogger<IGraph> logger, IFactory factory) : IGraph
 {
     private IEnumerable<Row> _row = new HashSet<Row>();
     private IEnumerable<Column> _column = new HashSet<Column>();

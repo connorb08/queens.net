@@ -1,6 +1,8 @@
+using Queens.Data;
+
 namespace Queens.Interfaces;
 
-internal interface IPageController
+internal interface IPageController : IAsyncDisposable
 {
-
+    public Task<GameDefinition> GetGameDefinition();
 }

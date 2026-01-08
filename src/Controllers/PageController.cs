@@ -17,7 +17,7 @@ internal static partial class RegexPatterns
     internal static partial Regex CellColorIdRegex();
 }
 
-internal sealed class PageController(ILogger<PageController>? logger) : IPageController, IAsyncDisposable
+internal sealed class PageController(ILogger<PageController>? logger) : IPageController
 {
 
     private readonly ILogger<PageController>? _logger = logger;
