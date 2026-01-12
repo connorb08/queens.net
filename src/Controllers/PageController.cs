@@ -17,7 +17,7 @@ internal static partial class RegexPatterns
     internal static partial Regex CellColorIdRegex();
 }
 
-internal sealed class PageController(ILogger<PageController>? logger) : IPageController
+internal sealed class PageController(ILogger<PageController>? logger, IConfig config) : IPageController
 {
 
     private readonly ILogger<PageController>? _logger = logger;
@@ -31,24 +31,39 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
 
     public async Task<GameDefinition> GetGameDefinition()
     {
+        await LaunchBrowserAsync();
+        await StartGameAsync();
+        return await ParseGameDefinitionAsync();
+    }
+
+    private async Task LaunchBrowserAsync()
+    {
         _playwright = await Playwright.CreateAsync();
         _browser = await _playwright.Chromium.LaunchAsync(new()
         {
-            Headless = true
+            Headless = config.Headless
         });
         _context = await _browser.NewContextAsync(new()
         {
-            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            UserAgent = config.UserAgent
         });
         _page = await _context.NewPageAsync();
+    }
 
-        await _page.GotoAsync("https://www.linkedin.com/games/view/queens/desktop");
-        var startButton = _page.GetByRole(AriaRole.Button).Filter(new() { HasTextString = "Start" });
-        await startButton.ClickAsync();
+    private async Task StartGameAsync()
+    {
+        await _page.GotoAsync(config.PageURL);
 
+        await _page
+                .GetByRole(AriaRole.Button)
+                .Filter(new() { HasTextString = "Start" }).First
+                .ClickAsync();
+    }
+
+    private async Task<GameDefinition> ParseGameDefinitionAsync()
+    {
         var tableCells = await _page.QuerySelectorAllAsync("div.queens-cell-with-border");
         var colors = new ConcurrentDictionary<int, ColorData>();
-
         var cellsInfo = await Task.WhenAll(
             tableCells.Select(async (cell) =>
             {
@@ -84,7 +99,6 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
         };
 
         return state;
-
     }
 
     public async ValueTask DisposeAsync()
@@ -111,5 +125,4 @@ internal sealed class PageController(ILogger<PageController>? logger) : IPageCon
         _playwright?.Dispose();
         _disposed = true;
     }
-
 }

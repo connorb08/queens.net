@@ -8,18 +8,13 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-
         string environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? Environments.Development;
-
         await BuildHost(args, environment)
+            .LoadAndRegisterConfig()
+            .AddLogging()
             .RegisterServices()
             .Build()
-            .StartAsync();
-
-        // var controller = new PageController(null);
-        // var gameDefinition = await controller.GetGameDefinition();
-        // await controller.DisposeAsync();
-        // Console.WriteLine(gameDefinition);
+            .RunAsync();
     }
 
     private static HostApplicationBuilder BuildHost(string[] args, string environment) => Host.CreateEmptyApplicationBuilder(new()

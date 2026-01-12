@@ -6,30 +6,23 @@ namespace Queens.Controllers;
 
 internal sealed class SolutionController(
     ILogger<SolutionController> logger,
-    IPageController pageController
-) : IHostedService, IAsyncDisposable
+    IPageController pageController,
+    IHostApplicationLifetime lifetime
+) : BackgroundService
 {
 
-    public async Task SolveAndPublishResult()
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await SolveAndPublishResult();
+        lifetime.StopApplication();
+    }
+
+    private async Task SolveAndPublishResult()
     {
         logger.LogInformation("Solving the puzzle and publishing the result...");
         var gameDefinition = await pageController.GetGameDefinition();
-        Console.WriteLine(gameDefinition);
+        logger.LogInformation("Game definition retrieved: {GameDefinition}", gameDefinition.ToJson());
         return;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        await SolveAndPublishResult();
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        await Task.CompletedTask;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await ValueTask.CompletedTask;
-    }
 }

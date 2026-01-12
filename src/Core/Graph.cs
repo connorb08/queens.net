@@ -1,7 +1,7 @@
+using Queens.Core.Variables;
 using Queens.Data;
 using Queens.Interfaces;
 using Queens.Services;
-using Queens.Variables;
 
 namespace Queens.Core;
 

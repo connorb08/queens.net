@@ -1,7 +1,6 @@
 using Queens.Enums;
-using Queens.Interfaces;
 
-namespace Queens.Variables;
+namespace Queens.Core.Variables;
 
 internal sealed class Row(ILogger<Row> logger) : CellGroup(logger)
 {

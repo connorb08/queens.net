@@ -1,6 +1,6 @@
 using Queens.Enums;
 
-namespace Queens.Variables;
+namespace Queens.Core.Variables;
 
 internal sealed class Color(ILogger<Color> logger) : CellGroup(logger)
 {

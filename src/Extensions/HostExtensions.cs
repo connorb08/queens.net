@@ -1,11 +1,12 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Queens.Controllers;
 using Queens.Core;
+using Queens.Core.Variables;
 using Queens.Interfaces;
 using Queens.Services;
-using Queens.Variables;
 
 namespace Queens.Extensions;
 
@@ -27,5 +28,23 @@ internal static class HostExtensions
                 .AddHostedService<SolutionController>();
             return builder;
         }
+
+        internal HostApplicationBuilder LoadAndRegisterConfig()
+        {
+            builder.Services.AddSingleton<IConfig>(builder.Configuration.Get<Config>());
+            return builder;
+        }
+
+        internal HostApplicationBuilder AddLogging()
+        {
+            builder.Services.AddLogging(config =>
+            {
+                config.ClearProviders();
+                config.AddConfiguration(builder.Configuration.GetSection("Logging"));
+                config.AddConsole();
+            });
+            return builder;
+        }
+
     }
 }

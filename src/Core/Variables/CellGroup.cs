@@ -1,7 +1,7 @@
 using Queens.Enums;
 using Queens.Interfaces;
 
-namespace Queens.Variables;
+namespace Queens.Core.Variables;
 
 internal abstract class CellGroup(ILogger<CellGroup> logger) : ICellGroup
 {

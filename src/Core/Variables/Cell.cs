@@ -1,6 +1,6 @@
 using Queens.Interfaces;
 
-namespace Queens.Variables;
+namespace Queens.Core.Variables;
 
 internal sealed class Cell(ILogger<Cell> logger, ushort id, Row row, Column column, Color color) : ICell
 {

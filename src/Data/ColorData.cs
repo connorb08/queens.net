@@ -1,13 +1,15 @@
+using System.Text.Json.Serialization;
+
 namespace Queens.Data;
 
 internal readonly record struct ColorData
 {
-    internal int Id { get; init; }
-    internal string Name { get; init; }
-    internal string RGB { get; init; }
+    [JsonPropertyName("id")]
+    public int Id { get; init; }
 
-    public override string ToString()
-    {
-        return $"{Name}({Id}): {RGB}";
-    }
+    [JsonPropertyName("name")]
+    public string Name { get; init; }
+
+    [JsonPropertyName("rgb")]
+    public string RGB { get; init; }
 }
