@@ -1,11 +1,11 @@
 {
-    "[csharp]": {
-        "editor.defaultFormatter": "ms-dotnettools.csharp"
-    },
-    "editor.formatOnSave": true,
-    "dotnet.codeLens.enableReferencesCodeLens": false,
-    "files.exclude": {
-        "src/bin": true,
-        "src/obj": true
-    }
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+  "editor.formatOnSave": true,
+  "dotnet.codeLens.enableReferencesCodeLens": false,
+  "files.exclude": {
+    "src/bin": true,
+    "src/obj": true
+  }
 }
