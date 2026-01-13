@@ -14,10 +14,10 @@ internal sealed class Graph : IGraph
     private readonly HashSet<ICellGroup> _columns = [];
     private readonly HashSet<ICellGroup> _colors = [];
 
-    public IEnumerable<ICell> Cells => _cells.Where(cell => cell.Satisfied);
-    public IEnumerable<ICellGroup> Rows => _rows.Where(row => row.Satisfied);
-    public IEnumerable<ICellGroup> Columns => _columns.Where(column => column.Satisfied);
-    public IEnumerable<ICellGroup> Colors => _colors.Where(color => color.Satisfied);
+    public IEnumerable<ICell> Cells => _cells.Where(cell => !cell.Satisfied);
+    public IEnumerable<ICellGroup> Rows => _rows.Where(row => !row.Satisfied);
+    public IEnumerable<ICellGroup> Columns => _columns.Where(column => !column.Satisfied);
+    public IEnumerable<ICellGroup> Colors => _colors.Where(color => !color.Satisfied);
 
     internal Graph(ILogger<IGraph> logger, IFactory factory, GameDefinition definition)
     {

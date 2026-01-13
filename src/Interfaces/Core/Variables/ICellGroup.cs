@@ -8,6 +8,7 @@ internal interface ICellGroup
     public CellGrouping Grouping { get; }
     public IEnumerable<ICell> Cells { get; }
     public bool Satisfied { get; }
+    public int Id { get; }
 
     /// <summary>
     /// Filters the cell group based on specific criteria.
