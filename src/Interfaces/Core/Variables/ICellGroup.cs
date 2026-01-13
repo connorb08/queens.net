@@ -1,6 +1,6 @@
 using Queens.Enums;
 
-namespace Queens.Interfaces;
+namespace Queens.Interfaces.Core.Variables;
 
 internal interface ICellGroup
 {

@@ -5,7 +5,10 @@ using Microsoft.Extensions.Hosting;
 using Queens.Controllers;
 using Queens.Core;
 using Queens.Core.Variables;
+using Queens.Enums;
 using Queens.Interfaces;
+using Queens.Interfaces.Core;
+using Queens.Interfaces.Core.Variables;
 using Queens.Services;
 
 namespace Queens.Extensions;
@@ -20,9 +23,6 @@ internal static class HostExtensions
             builder.Services
                 .AddSingleton<IFactory, Factory>()
                 .AddSingleton<IGraph, Graph>()
-                .AddTransient<Row>()
-                .AddTransient<Column>()
-                .AddTransient<Color>()
                 .AddTransient<ICell, Cell>()
                 .AddSingleton<IPageController, PageController>()
                 .AddHostedService<SolutionController>();

@@ -2,6 +2,7 @@ using Queens.Core.Variables;
 using Queens.Data;
 using Queens.Interfaces;
 using Queens.Interfaces.Core;
+using Queens.Interfaces.Core.Variables;
 using Queens.Services;
 
 namespace Queens.Core;
@@ -9,14 +10,14 @@ namespace Queens.Core;
 internal sealed class Graph(ILogger<IGraph> logger, IFactory factory) : IGraph
 {
     private readonly HashSet<ICell> _cells = [];
-    private readonly HashSet<Row> _rows = [];
-    private readonly HashSet<Column> _columns = [];
-    private readonly HashSet<Color> _colors = [];
+    private readonly HashSet<ICellGroup> _rows = [];
+    private readonly HashSet<ICellGroup> _columns = [];
+    private readonly HashSet<ICellGroup> _colors = [];
 
     public IEnumerable<ICell> Cells => _cells.Where(cell => cell.Satisfied);
-    public IEnumerable<Row> Rows => _rows.Where(row => row.Satisfied);
-    public IEnumerable<Column> Columns => _columns.Where(column => column.Satisfied);
-    public IEnumerable<Color> Colors => _colors.Where(color => color.Satisfied);
+    public IEnumerable<ICellGroup> Rows => _rows.Where(row => row.Satisfied);
+    public IEnumerable<ICellGroup> Columns => _columns.Where(column => column.Satisfied);
+    public IEnumerable<ICellGroup> Colors => _colors.Where(color => color.Satisfied);
 
     public IGraph Construct(GameDefinition definition)
     {
@@ -34,9 +35,9 @@ internal sealed class Graph(ILogger<IGraph> logger, IFactory factory) : IGraph
             int columnId = cellId % definition.SideLength;
             int colorId = definition.CellColors[cellId];
 
-            Row row = _rows.ElementAt(rowId);
-            Column column = _columns.ElementAt(columnId);
-            Color color = _colors.ElementAt(colorId);
+            var row = _rows.ElementAt(rowId);
+            var column = _columns.ElementAt(columnId);
+            var color = _colors.ElementAt(colorId);
             ICell cell = factory.CreateCell(cellId, row, column, color);
 
             _cells.Add(cell);

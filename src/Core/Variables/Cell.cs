@@ -1,16 +1,17 @@
 using Queens.Interfaces;
+using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Core.Variables;
 
-internal sealed class Cell(ILogger<Cell> logger, int id, Row row, Column column, Color color) : ICell
+internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGroup column, ICellGroup color) : ICell
 {
 
     // #region Fields
 
     private readonly ILogger<Cell> _logger = logger;
-    private readonly Row _row = row;
-    private readonly Column _column = column;
-    private readonly Color _color = color;
+    private readonly ICellGroup _row = row;
+    private readonly ICellGroup _column = column;
+    private readonly ICellGroup _color = color;
     private readonly HashSet<ICell> _corners = [];
     private bool? _isQueen = null;
 

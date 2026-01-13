@@ -4,16 +4,17 @@ using Queens.Core.Variables;
 using Queens.Data;
 using Queens.Interfaces;
 using Queens.Interfaces.Core;
+using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Services;
 
 internal interface IFactory
 {
-    public Row CreateRow(int id);
-    public Column CreateColumn(int id);
-    public Color CreateColor(int id);
+    public ICellGroup CreateRow(int id);
+    public ICellGroup CreateColumn(int id);
+    public ICellGroup CreateColor(int id);
     public IGraph CreateGraph(GameDefinition definition);
-    public ICell CreateCell(int id, Row row, Column column, Color color);
+    public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color);
 }
 
 internal class Factory(IServiceProvider serviceProvider) : IFactory
@@ -22,12 +23,12 @@ internal class Factory(IServiceProvider serviceProvider) : IFactory
         serviceProvider.GetRequiredService<IGraph>()
         .Construct(definition);
 
-    public ICell CreateCell(int id, Row row, Column column, Color color)
+    public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color)
     {
         return new Cell(serviceProvider.GetRequiredService<ILogger<Cell>>(), id, row, column, color);
     }
 
-    public Row CreateRow(int id) => new(serviceProvider.GetRequiredService<ILogger<Row>>(), id);
-    public Column CreateColumn(int id) => new(serviceProvider.GetRequiredService<ILogger<Column>>(), id);
-    public Color CreateColor(int id) => new(serviceProvider.GetRequiredService<ILogger<Color>>(), id);
+    public ICellGroup CreateRow(int id) => new Row(serviceProvider.GetRequiredService<ILogger<Row>>(), id);
+    public ICellGroup CreateColumn(int id) => new Column(serviceProvider.GetRequiredService<ILogger<Column>>(), id);
+    public ICellGroup CreateColor(int id) => new Color(serviceProvider.GetRequiredService<ILogger<Color>>(), id);
 }

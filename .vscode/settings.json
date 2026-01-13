@@ -5,7 +5,7 @@
   "editor.formatOnSave": true,
   "dotnet.codeLens.enableReferencesCodeLens": false,
   "files.exclude": {
-    "src/bin": true,
-    "src/obj": true
+    "**/*/bin": true,
+    "**/*/obj": true
   }
 }

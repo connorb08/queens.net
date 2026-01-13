@@ -15,21 +15,35 @@ internal sealed class SolutionController(
 ) : BackgroundService
 {
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    private GameDefinition _definition = new();
+    private GameSolution _solution = new();
+    private IGraph _graph = null!;
+
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        await Setup();
         await SolveAndPublishResult();
         lifetime.StopApplication();
     }
 
+    private async Task Setup()
+    {
+        _definition = await pageController.GetGameDefinition();
+        _graph = factory.CreateGraph(_definition);
+    }
+
     private async Task SolveAndPublishResult()
     {
-        logger.LogInformation("Solving the puzzle and publishing the result...");
-        var gameDefinition = await pageController.GetGameDefinition();
-        logger.LogInformation("Game definition retrieved: {GameDefinition}", gameDefinition.ToJson());
-        var graph = factory.CreateGraph(gameDefinition);
-        var solution = new GameSolution();
-        logger.LogInformation("Solution found: {Solution}", solution.ToJson());
+        _solution = Solve();
+        logger.LogInformation("Solution found: {Solution}", _solution.ToJson());
         return;
+    }
+
+    private GameSolution Solve()
+    {
+        _ = _graph;
+        var solution = new GameSolution();
+        return solution;
     }
 
 }
