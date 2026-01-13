@@ -74,9 +74,9 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
 
                 string?[] values = await Task.WhenAll(cellIdx, cellClass, ariaLabel, colorValue);
 
-                if (!int.TryParse(values[0], out var cellId)) throw new InvalidOperationException("Failed to parse cell index");
+                if (!ushort.TryParse(values[0], out var cellId)) throw new InvalidOperationException("Failed to parse cell index");
                 var colorIdText = values[1]?.Match(_cellColorIdRegex)?.Groups[1]?.Value.Trim();
-                if (!int.TryParse(colorIdText, out var colorId)) throw new InvalidOperationException("Failed to parse cell color");
+                if (!ushort.TryParse(colorIdText, out var colorId)) throw new InvalidOperationException("Failed to parse cell color");
                 var colorName = values[2]?.Match(_ariaLabelRegex)?.Groups[1]?.Value.Trim() ?? throw new InvalidOperationException("Failed to parse color name");
                 var colorRGB = values[3] ?? throw new InvalidOperationException("Failed to parse color value");
 
@@ -93,7 +93,7 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
 
         GameDefinition state = new()
         {
-            SideLength = (int)Math.Sqrt(cellsInfo.Length),
+            SideLength = (ushort)Math.Sqrt(cellsInfo.Length),
             Colors = [.. colors.Values],
             CellColors = [.. cellsInfo.OrderBy(c => c.cellId).Select(c => c.colorId)]
         };

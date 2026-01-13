@@ -3,11 +3,12 @@ using Queens.Interfaces;
 
 namespace Queens.Core.Variables;
 
-internal abstract class CellGroup(ILogger<CellGroup> logger) : ICellGroup
+internal abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
 {
     public abstract CellGrouping Grouping { get; }
-
     public IEnumerable<ICell> Cells { get; } = new HashSet<ICell>();
+    public int Id { get; } = id;
+    public bool Satisfied => Cells.All(cell => cell.Satisfied);
 
     public void AddCell(ICell cell)
     {

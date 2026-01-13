@@ -2,7 +2,7 @@ using Queens.Interfaces;
 
 namespace Queens.Core.Variables;
 
-internal sealed class Cell(ILogger<Cell> logger, ushort id, Row row, Column column, Color color) : ICell
+internal sealed class Cell(ILogger<Cell> logger, int id, Row row, Column column, Color color) : ICell
 {
 
     // #region Fields
@@ -18,7 +18,7 @@ internal sealed class Cell(ILogger<Cell> logger, ushort id, Row row, Column colu
 
     // #region Properties
 
-    public ushort Id { get; } = id;
+    public int Id { get; } = id;
     public bool Satisfied => _isQueen.HasValue;
     public IEnumerable<ICell> Edges => _corners
         .Concat(_row.Cells)
@@ -32,7 +32,7 @@ internal sealed class Cell(ILogger<Cell> logger, ushort id, Row row, Column colu
 
     public bool AddCorner(ICell cell)
     {
-        return _corners.Add(cell) | cell.AddCorner(this);
+        return !_corners.Contains(cell) && _corners.Add(cell) && cell.AddCorner(this);
     }
 
     public void SetQueen(bool isQueen)

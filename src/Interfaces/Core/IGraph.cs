@@ -1,10 +1,8 @@
 using Queens.Data;
 
-namespace Queens.Interfaces;
+namespace Queens.Interfaces.Core;
 
 internal interface IGraph
 {
-
-    public GameSolution Solve(GameDefinition definition);
-
+    public IGraph Construct(GameDefinition definition);
 }
