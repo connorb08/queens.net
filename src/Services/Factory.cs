@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using Queens.Core;
 using Queens.Core.Variables;
 using Queens.Data;
 using Queens.Interfaces;
@@ -20,8 +21,7 @@ internal interface IFactory
 internal class Factory(IServiceProvider serviceProvider) : IFactory
 {
     public IGraph CreateGraph(GameDefinition definition) =>
-        serviceProvider.GetRequiredService<IGraph>()
-        .Construct(definition);
+        new Graph(serviceProvider.GetRequiredService<ILogger<IGraph>>(), this, definition);
 
     public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color)
     {

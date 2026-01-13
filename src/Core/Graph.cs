@@ -7,7 +7,7 @@ using Queens.Services;
 
 namespace Queens.Core;
 
-internal sealed class Graph(ILogger<IGraph> logger, IFactory factory) : IGraph
+internal sealed class Graph : IGraph
 {
     private readonly HashSet<ICell> _cells = [];
     private readonly HashSet<ICellGroup> _rows = [];
@@ -19,7 +19,7 @@ internal sealed class Graph(ILogger<IGraph> logger, IFactory factory) : IGraph
     public IEnumerable<ICellGroup> Columns => _columns.Where(column => column.Satisfied);
     public IEnumerable<ICellGroup> Colors => _colors.Where(color => color.Satisfied);
 
-    public IGraph Construct(GameDefinition definition)
+    internal Graph(ILogger<IGraph> logger, IFactory factory, GameDefinition definition)
     {
         logger.LogInformation("Constructing graph with side length {SideLength}", definition.SideLength);
         for (int i = 0; i < definition.SideLength; i++)
@@ -67,7 +67,5 @@ internal sealed class Graph(ILogger<IGraph> logger, IFactory factory) : IGraph
                 }
             }
         }
-
-        return this;
     }
 }

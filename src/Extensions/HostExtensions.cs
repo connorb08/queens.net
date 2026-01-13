@@ -22,8 +22,6 @@ internal static class HostExtensions
         {
             builder.Services
                 .AddSingleton<IFactory, Factory>()
-                .AddSingleton<IGraph, Graph>()
-                .AddTransient<ICell, Cell>()
                 .AddSingleton<IPageController, PageController>()
                 .AddHostedService<SolutionController>();
             return builder;
