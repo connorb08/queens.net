@@ -1,4 +1,6 @@
-namespace Queens.Interfaces;
+using Queens.Interfaces.Core.Variables;
+
+namespace Queens.Interfaces.Data;
 
 internal interface IStep
 {

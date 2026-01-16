@@ -1,4 +1,3 @@
-using Queens.Interfaces;
 using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Core.Variables;
@@ -8,7 +7,6 @@ internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGr
 
     // #region Fields
 
-    private readonly ILogger<Cell> _logger = logger;
     private readonly ICellGroup _row = row;
     private readonly ICellGroup _column = column;
     private readonly ICellGroup _color = color;
@@ -25,19 +23,28 @@ internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGr
         .Concat(_row.Cells)
         .Concat(_column.Cells)
         .Concat(_color.Cells)
-        .Where(cell => cell.Id != Id && !cell.Satisfied);
+        .Where(cell => cell.Id != Id && !cell.Satisfied)
+        .Distinct();
 
+    public Row Row => (Row)_row;
+    public Column Column => (Column)_column;
+    public Color Color => (Color)_color;
     // #endregion
 
     // #region Methods
 
-    public bool AddCorner(ICell cell)
+    public void AddCorner(ICell cell)
     {
-        return !_corners.Contains(cell) && _corners.Add(cell) && cell.AddCorner(this);
+        _corners.Add(cell);
     }
 
     public void SetQueen(bool isQueen)
     {
+        if (isQueen)
+            logger.PlaceQueen(Id);
+        else
+            logger.PlaceCross(Id, "reason");
+
         _isQueen = isQueen;
     }
 

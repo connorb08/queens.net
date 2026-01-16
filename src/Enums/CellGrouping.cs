@@ -1,6 +1,6 @@
 namespace Queens.Enums;
 
-internal enum CellGrouping
+public enum CellGrouping
 {
     Row,
     Column,

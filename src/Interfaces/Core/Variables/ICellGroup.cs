@@ -1,8 +1,9 @@
+using Queens.Core.Variables;
 using Queens.Enums;
 
 namespace Queens.Interfaces.Core.Variables;
 
-internal interface ICellGroup
+public interface ICellGroup
 {
 
     public CellGrouping Grouping { get; }
@@ -10,11 +11,22 @@ internal interface ICellGroup
     public bool Satisfied { get; }
     public int Id { get; }
 
-    /// <summary>
-    /// Filters the cell group based on specific criteria.
-    /// </summary>
-    /// <returns>True if a cell was removed.</returns>
-    public bool Filter();
+    public IEnumerable<Row> Rows { get; }
+    public IEnumerable<Column> Columns { get; }
+    public IEnumerable<Color> Colors { get; }
+
+    // #region Setup Methods
 
     public void AddCell(ICell cell);
+
+    // #endregion
+
+    /// <summary>
+    /// Filters out the cell group based on specific criteria.
+    /// </summary>
+    /// <returns>True if a cell was removed.</returns>
+    public bool FilterOut(Func<ICell, bool> predicate);
+
+    public bool LocalSearch();
+
 }

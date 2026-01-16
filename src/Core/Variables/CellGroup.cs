@@ -1,24 +1,38 @@
 using Queens.Enums;
-using Queens.Interfaces;
 using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Core.Variables;
 
-internal abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
+public abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
 {
+
+    private readonly HashSet<ICell> _cells = [];
+
     public abstract CellGrouping Grouping { get; }
-    public IEnumerable<ICell> Cells { get; } = new HashSet<ICell>();
     public int Id { get; } = id;
-    public bool Satisfied => Cells.All(cell => cell.Satisfied);
+    public bool Satisfied => _cells.All(cell => cell.Satisfied);
+
+    public IEnumerable<ICell> Cells => _cells;
+    public IEnumerable<Row> Rows => Cells.Select(cell => cell.Row).Distinct();
+    public IEnumerable<Column> Columns => Cells.Select(cell => cell.Column).Distinct();
+    public IEnumerable<Color> Colors => Cells.Select(cell => cell.Color).Distinct();
+
+    public abstract bool LocalSearch();
 
     public void AddCell(ICell cell)
     {
         ArgumentNullException.ThrowIfNull(cell);
-        (Cells as HashSet<ICell>)?.Add(cell);
+        _cells.Add(cell);
     }
 
-    public bool Filter()
+    public bool FilterOut(Func<ICell, bool> predicate)
     {
-        return false;
+        ArgumentNullException.ThrowIfNull(predicate);
+        var cellsToRemove = _cells.Where(predicate).ToList();
+        foreach (var cell in cellsToRemove)
+        {
+            cell.SetQueen(false);
+        }
+        return cellsToRemove.Count > 0;
     }
 }

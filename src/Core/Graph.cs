@@ -1,6 +1,4 @@
-using Queens.Core.Variables;
 using Queens.Data;
-using Queens.Interfaces;
 using Queens.Interfaces.Core;
 using Queens.Interfaces.Core.Variables;
 using Queens.Services;
@@ -14,10 +12,10 @@ internal sealed class Graph : IGraph
     private readonly HashSet<ICellGroup> _columns = [];
     private readonly HashSet<ICellGroup> _colors = [];
 
-    public IEnumerable<ICell> Cells => _cells.Where(cell => !cell.Satisfied);
-    public IEnumerable<ICellGroup> Rows => _rows.Where(row => !row.Satisfied);
-    public IEnumerable<ICellGroup> Columns => _columns.Where(column => !column.Satisfied);
-    public IEnumerable<ICellGroup> Colors => _colors.Where(color => !color.Satisfied);
+    public IReadOnlySet<ICell> Cells => _cells.Where(cell => !cell.Satisfied).ToHashSet().AsReadOnly();
+    public IReadOnlySet<ICellGroup> Rows => _rows.Where(row => !row.Satisfied).ToHashSet().AsReadOnly();
+    public IReadOnlySet<ICellGroup> Columns => _columns.Where(column => !column.Satisfied).ToHashSet().AsReadOnly();
+    public IReadOnlySet<ICellGroup> Colors => _colors.Where(color => !color.Satisfied).ToHashSet().AsReadOnly();
 
     internal Graph(ILogger<IGraph> logger, IFactory factory, GameDefinition definition)
     {
@@ -29,6 +27,7 @@ internal sealed class Graph : IGraph
             _colors.Add(factory.CreateColor(_colors.Count));
         }
 
+        // var cellsById = new ICell[definition.CellColors.Length];
         for (int cellId = 0; cellId < definition.CellColors.Length; cellId++)
         {
             int rowId = cellId / definition.SideLength;
@@ -44,27 +43,30 @@ internal sealed class Graph : IGraph
             row.AddCell(cell);
             column.AddCell(cell);
             color.AddCell(cell);
+        }
+
+        for (int cellId = 0; cellId < _cells.Count; cellId++)
+        {
+            int rowId = cellId / definition.SideLength;
+            int columnId = cellId % definition.SideLength;
+            ICell cell = _cells.ElementAt(cellId);
 
             // Add top-left corner if it exists
             if (rowId > 0 && columnId > 0)
             {
                 int topLeftId = (rowId - 1) * definition.SideLength + (columnId - 1);
-                ICell? topLeftCell = _cells.FirstOrDefault(c => c.Id == topLeftId);
-                if (topLeftCell is not null)
-                {
-                    cell.AddCorner(topLeftCell);
-                }
+                ICell topLeftCell = _cells.ElementAt(topLeftId);
+                cell.AddCorner(topLeftCell);
+                topLeftCell.AddCorner(cell);
             }
 
-            // // Add top-right corner if it exists
+            // Add top-right corner if it exists
             if (rowId > 0 && columnId < definition.SideLength - 1)
             {
                 int topRightId = (rowId - 1) * definition.SideLength + (columnId + 1);
-                ICell? topRightCell = _cells.FirstOrDefault(c => c.Id == topRightId);
-                if (topRightCell is not null)
-                {
-                    cell.AddCorner(topRightCell);
-                }
+                ICell topRightCell = _cells.ElementAt(topRightId);
+                cell.AddCorner(topRightCell);
+                topRightCell.AddCorner(cell);
             }
         }
     }

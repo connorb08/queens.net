@@ -3,16 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Queens.Data;
 using Queens.Interfaces.Core;
 using Queens.Services;
-
 namespace Tests.Core;
 
-public class GraphTests
+public class GraphTestData : TheoryData<IGraph, Dictionary<int, int[]>>
 {
+
     private readonly Factory _factory = new(
         new ServiceCollection()
             .AddLogging()
             .BuildServiceProvider()
     );
+
     private readonly GameDefinition _definition = new()
     {
         SideLength = 4,
@@ -50,36 +51,14 @@ public class GraphTests
             ]
     };
 
-    [Fact(Skip = "Not applicable after changing IEnumerable to IReadOnlySet")]
-    public void GraphRows_ShouldNotIterate_WhenSatisified()
+    public GraphTestData()
     {
-
-        IGraph graph = _factory.CreateGraph(_definition);
-
-        foreach (var row in graph.Rows)
+        Add(_factory.CreateGraph(_definition), new Dictionary<int, int[]>
         {
-            foreach (var cell in graph.Rows.ElementAt(1).Cells)
-            {
-                cell.SetQueen(true);
-            }
-            Assert.NotEqual(1, row.Id);
-        }
-    }
-
-    [Theory]
-    [ClassData(typeof(GraphTestData))]
-    public void Graph_WhenConstructed_ShouldConnectCorners(IGraph graph, Dictionary<int, int[]> expectedEdges)
-    {
-
-        foreach (var cell in graph.Cells)
-        {
-            if (expectedEdges.TryGetValue(cell.Id, out var expectedEdgeIds))
-            {
-                var actualEdgeIds = cell.Edges.Select(e => e.Id).ToArray();
-                Array.Sort(actualEdgeIds);
-                Array.Sort(expectedEdgeIds);
-                Assert.Equal(expectedEdgeIds, actualEdgeIds);
-            }
-        }
+            { 0, [1, 2, 3, 4, 5, 8, 12] },
+            { 1, [0, 2, 3, 4, 5, 6, 9, 13] },
+            { 2, [0, 1, 3, 4, 5, 6, 7, 10, 14] },
+            { 3, [0, 1, 2, 4, 5, 6, 7, 11, 15] }
+        });
     }
 }
