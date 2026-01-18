@@ -3,12 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Queens.Controllers;
-using Queens.Core;
-using Queens.Core.Variables;
-using Queens.Enums;
 using Queens.Interfaces;
-using Queens.Interfaces.Core;
-using Queens.Interfaces.Core.Variables;
 using Queens.Services;
 
 namespace Queens.Extensions;
