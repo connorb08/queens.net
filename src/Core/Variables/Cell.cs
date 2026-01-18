@@ -19,6 +19,7 @@ internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGr
 
     public int Id { get; } = id;
     public bool Satisfied => _isQueen.HasValue;
+    public bool IsQueen => _isQueen.HasValue && _isQueen.Value;
     public IEnumerable<ICell> Edges => _corners
         .Concat(_row.Cells)
         .Concat(_column.Cells)
@@ -29,6 +30,7 @@ internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGr
     public Row Row => (Row)_row;
     public Column Column => (Column)_column;
     public Color Color => (Color)_color;
+
     // #endregion
 
     // #region Methods

@@ -6,6 +6,7 @@ public interface ICell
 {
     public int Id { get; }
     public bool Satisfied { get; }
+    public bool IsQueen { get; }
     public IEnumerable<ICell> Edges { get; }
 
     public Row Row { get; }

@@ -16,6 +16,8 @@ internal sealed class Graph : IGraph
     public IReadOnlySet<ICellGroup> Rows => _rows.Where(row => !row.Satisfied).ToHashSet().AsReadOnly();
     public IReadOnlySet<ICellGroup> Columns => _columns.Where(column => !column.Satisfied).ToHashSet().AsReadOnly();
     public IReadOnlySet<ICellGroup> Colors => _colors.Where(color => !color.Satisfied).ToHashSet().AsReadOnly();
+    public IReadOnlySet<ICell> Removed => _cells.Where(cell => cell.Satisfied && !cell.IsQueen).ToHashSet().AsReadOnly();
+    public IReadOnlySet<ICell> Queens => _cells.Where(cell => cell.Satisfied && cell.IsQueen).ToHashSet().AsReadOnly();
 
     internal Graph(ILogger<IGraph> logger, IFactory factory, GameDefinition definition)
     {

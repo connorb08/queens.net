@@ -8,7 +8,7 @@ internal static class SetExtensions
         internal IEnumerable<IReadOnlySet<T>> Combinations()
         {
             int members = set.Count;
-            int choose = 1;
+            int choose = 2;
             while (choose < members)
             {
                 foreach (var combination in Combine(set, choose))

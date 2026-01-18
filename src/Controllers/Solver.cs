@@ -56,6 +56,31 @@ internal sealed class Solver(
         foreach (var colorCombination in _graph.Colors.Combinations())
         {
 
+            bool trimmed = false;
+
+            int numberOfColors = colorCombination.Count;
+            var rows = colorCombination.SelectMany(c => c.Cells).Select(c => c.Row).Distinct().ToHashSet();
+            if (rows.Count == numberOfColors)
+            {
+                foreach (var row in rows)
+                {
+                    trimmed |= row.FilterOut(c => !colorCombination.Contains(c.Color), "Color combination mismatch");
+                }
+            }
+
+            var columns = colorCombination.SelectMany(c => c.Cells).Select(c => c.Column).Distinct().ToHashSet();
+            if (columns.Count == numberOfColors)
+            {
+                foreach (var column in columns)
+                {
+                    trimmed |= column.FilterOut(c => !colorCombination.Contains(c.Color), "Color combination mismatch");
+                }
+            }
+
+            if (trimmed)
+                return true;
+            else
+                continue;
         }
 
         return false;
@@ -71,83 +96,13 @@ internal sealed class Solver(
             iteration++;
         }
 
+        var unsatisfied = _graph.Cells.Select(c => c.Id).ToArray();
+        var queens = _graph.Queens.Select(c => c.Id).ToArray();
+        var removed = _graph.Removed.Select(c => c.Id).ToArray();
 
-        // foreach (var col in _graph.Columns)
-        // {
-        //     if (col.LocalSearch())
-        //     {
-        //         break;
-        //     }
-        // }
-
-        // foreach (var color in _graph.Colors)
-        // {
-        //     if (color.LocalSearch())
-        //     {
-        //         break;
-        //     }
-        // }
-
-
-
-
-        // _graph.Rows.CombineAll();
-
-        // bool shouldTrim = false;
-        // foreach (var rowCombination in _graph.Rows.Combinations())
-        // {
-
-        //     logger.LogDebug("Row combination: {Combination}", string.Join(", ", rowCombination.Select(r => r.Id)));
-
-        //     if (rowCombination.Count == 0)
-        //     {
-        //         break;
-        //     }
-
-        //     var rowCells = rowCombination.SelectMany(row => row.Cells);
-
-        //     logger.LogDebug("Row cells: {Cells}", string.Join(", ", rowCells.Select(c => c.Id)));
-
-        //     var cellEdges = rowCells.Select(cell => cell.Edges.Where(edge => !rowCells.Contains(edge)));
-
-        //     logger.LogDebug("Cell edges: {Edges}", string.Join(", ", cellEdges.SelectMany(e => e).Select(e => e.Id)));
-
-        //     var sharedEdges = cellEdges.Aggregate((acc, next) => acc.Intersect(next));
-        //     // var sharedEdges = rowCells.SelectMany(cell => cell.Edges.Where(edge => !rowCells.Contains(edge)));
-
-        //     logger.LogDebug("Shared edges: {Edges}", string.Join(", ", sharedEdges.Select(e => e.Id)));
-
-        //     if (sharedEdges.Any())
-        //     {
-        //         shouldTrim = true;
-        //     }
-
-        //     if (!shouldTrim)
-        //     {
-        //         continue;
-        //     }
-
-        //     foreach (var edge in sharedEdges)
-        //     {
-        //         edge.SetQueen(false);
-        //     }
-
-        //     break;
-        // }
-
-        // foreach (var col in _graph.Columns)
-        // {
-        //     col.LocalSearch();
-        // }
-
-        // foreach (var color in _graph.Colors)
-        // {
-        //     color.LocalSearch();
-        // }
-
-        var cells = _graph.Cells.Select(c => c.Id).ToArray();
-
-        logger.LogInformation("Cells with queens: {Cells}", string.Join(", ", cells));
+        logger.LogInformation("Cells with queens: {Cells}", string.Join(", ", queens));
+        logger.LogInformation("Cells removed: {Cells}", string.Join(", ", removed));
+        logger.LogInformation("Cells unsatisfied: {Cells}", string.Join(", ", unsatisfied));
 
         var solution = new GameSolution();
         return solution;
