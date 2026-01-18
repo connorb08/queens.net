@@ -22,9 +22,10 @@ internal sealed class Graph : IGraph
         logger.LogInformation("Constructing graph with side length {SideLength}", definition.SideLength);
         for (int i = 0; i < definition.SideLength; i++)
         {
+            string colorName = definition.Colors.First(c => c.Id == i).Name;
             _rows.Add(factory.CreateRow(_rows.Count));
             _columns.Add(factory.CreateColumn(_columns.Count));
-            _colors.Add(factory.CreateColor(_colors.Count));
+            _colors.Add(factory.CreateColor(_colors.Count, colorName));
         }
 
         // var cellsById = new ICell[definition.CellColors.Length];

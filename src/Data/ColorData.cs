@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Queens.Data;
 
-internal readonly record struct ColorData
+public readonly record struct ColorData
 {
     [JsonPropertyName("id")]
     public int Id { get; init; }

@@ -10,6 +10,7 @@ public interface ICellGroup
     public IEnumerable<ICell> Cells { get; }
     public bool Satisfied { get; }
     public int Id { get; }
+    public string? ColorName { get; }
 
     public IEnumerable<Row> Rows { get; }
     public IEnumerable<Column> Columns { get; }

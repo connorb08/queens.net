@@ -9,11 +9,19 @@ public sealed class Column(ILogger<Column> logger, int id) : CellGroup(logger, i
     public override bool LocalSearch()
     {
 
+        logger.AnalyzeGroup(this);
+
+        if (Cells.Count() == 1)
+        {
+            var cell = Cells.First();
+            cell.SetQueen(true, $"Column {Id} only has one cell left");
+            return true;
+        }
+
         if (Colors.Count() == 1)
         {
             Color color = Colors.First();
-            logger.LogInformation("All cells in Column {Id} are of color {Color}", Id, color.Id);
-            return color.FilterOut(c => c.Column != this, "Reason-6554");
+            return color.FilterOut(c => c.Column != this, $"Queen for {color.ColorName} must be in Column {Id}");
         }
 
         return RemoveSharedEdges();

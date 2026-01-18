@@ -23,7 +23,7 @@ internal static class HostExtensions
             builder.Services
                 .AddSingleton<IFactory, Factory>()
                 .AddSingleton<IPageController, PageController>()
-                .AddHostedService<SolutionController>();
+                .AddHostedService<Solver>();
             return builder;
         }
 

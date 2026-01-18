@@ -8,6 +8,14 @@ public sealed class Row(ILogger<Row> logger, int id) : CellGroup(logger, id)
 
     public override bool LocalSearch()
     {
+        logger.AnalyzeGroup(this);
+
+        if (Cells.Count() == 1)
+        {
+            var cell = Cells.First();
+            cell.SetQueen(true, $"Row {Id} only has one cell left");
+            return true;
+        }
 
         if (Colors.Count() == 1)
         {

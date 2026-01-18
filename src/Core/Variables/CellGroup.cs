@@ -3,7 +3,7 @@ using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Core.Variables;
 
-public abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
+public abstract class CellGroup(ILogger<CellGroup> logger, int id, string? colorName = null) : ICellGroup
 {
 
     private readonly HashSet<ICell> _cells = [];
@@ -11,6 +11,7 @@ public abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
     public abstract CellGrouping Grouping { get; }
     public int Id { get; } = id;
     public bool Satisfied => _cells.All(cell => cell.Satisfied);
+    public string? ColorName => colorName;
 
     public IEnumerable<ICell> Cells => _cells.Where(cell => !cell.Satisfied);
     public IEnumerable<Row> Rows => Cells.Select(cell => cell.Row).Distinct();

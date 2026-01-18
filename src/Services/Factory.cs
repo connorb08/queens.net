@@ -13,7 +13,7 @@ internal interface IFactory
 {
     public ICellGroup CreateRow(int id);
     public ICellGroup CreateColumn(int id);
-    public ICellGroup CreateColor(int id);
+    public ICellGroup CreateColor(int id, string colorName);
     public IGraph CreateGraph(GameDefinition definition);
     public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color);
 }
@@ -30,5 +30,5 @@ internal class Factory(IServiceProvider serviceProvider) : IFactory
 
     public ICellGroup CreateRow(int id) => new Row(serviceProvider.GetRequiredService<ILogger<Row>>(), id);
     public ICellGroup CreateColumn(int id) => new Column(serviceProvider.GetRequiredService<ILogger<Column>>(), id);
-    public ICellGroup CreateColor(int id) => new Color(serviceProvider.GetRequiredService<ILogger<Color>>(), id);
+    public ICellGroup CreateColor(int id, string colorName) => new Color(serviceProvider.GetRequiredService<ILogger<Color>>(), id, colorName);
 }

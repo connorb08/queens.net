@@ -6,3 +6,11 @@ public enum CellGrouping
     Column,
     Color
 }
+
+internal static class CellGroupingExtensions
+{
+    extension(CellGrouping group)
+    {
+        internal string Name => group.ToString();
+    }
+}

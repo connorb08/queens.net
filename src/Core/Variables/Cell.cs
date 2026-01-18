@@ -46,12 +46,17 @@ internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGr
             return;
         }
 
+        _isQueen = shouldPlaceQueen;
+
         if (shouldPlaceQueen)
+        {
             logger.PlaceQueen(Id, reason);
+            foreach (var cell in Edges)
+                cell.SetQueen(false, $"Cell cannot be a queen because it is an edge of Cell {Id}");
+        }
         else
             logger.PlaceCross(Id, reason);
 
-        _isQueen = shouldPlaceQueen;
     }
 
     // #endregion

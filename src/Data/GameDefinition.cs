@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Queens.Data;
 
-internal readonly record struct GameDefinition
+public readonly record struct GameDefinition
 {
     [JsonPropertyName("sideLength")]
     public int SideLength { get; init; }

@@ -1,27 +1,34 @@
 using Queens.Enums;
-using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Core.Variables;
 
-public sealed class Color(ILogger<Color> logger, int id) : CellGroup(logger, id)
+public sealed class Color(ILogger<Color> logger, int id, string colorName) : CellGroup(logger, id, colorName)
 {
     public override CellGrouping Grouping => CellGrouping.Color;
 
     public override bool LocalSearch()
     {
 
+        logger.AnalyzeGroup(this);
+
+        if (Cells.Count() == 1)
+        {
+            var cell = Cells.First();
+            logger.LogInformation("Only one cell with color {ColorName} in the group", ColorName);
+            cell.SetQueen(true, $"{ColorName} only has one cell left");
+            return true;
+        }
+
         if (Rows.Count() == 1)
         {
             Row row = Rows.First();
-            logger.LogInformation("All colors are in Row {Id}", row.Id);
-            return row.FilterOut(c => c.Color != this, $"Reason=377593");
+            return row.FilterOut(c => c.Color != this, $"This row must be {ColorName}");
         }
 
         if (Columns.Count() == 1)
         {
             Column column = Columns.First();
-            logger.LogInformation("All colors are in Column {Id}", column.Id);
-            return column.FilterOut(c => c.Color != this, $"Reason=983737");
+            return column.FilterOut(c => c.Color != this, $"This column must be {ColorName}");
         }
 
         return RemoveSharedEdges();
@@ -35,8 +42,7 @@ public sealed class Color(ILogger<Color> logger, int id) : CellGroup(logger, id)
         bool trimmed = intersection.Count > 0;
         foreach (var cell in intersection)
         {
-            logger.LogInformation("Color {Id} removing shared edge Cell {CellId}", Id, cell.Id);
-            cell.SetQueen(false, $"Reason-123432");
+            cell.SetQueen(false, $"Blocks a queen in {ColorName}({Id})");
         }
 
         return trimmed;
