@@ -12,7 +12,7 @@ public abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
     public int Id { get; } = id;
     public bool Satisfied => _cells.All(cell => cell.Satisfied);
 
-    public IEnumerable<ICell> Cells => _cells;
+    public IEnumerable<ICell> Cells => _cells.Where(cell => !cell.Satisfied);
     public IEnumerable<Row> Rows => Cells.Select(cell => cell.Row).Distinct();
     public IEnumerable<Column> Columns => Cells.Select(cell => cell.Column).Distinct();
     public IEnumerable<Color> Colors => Cells.Select(cell => cell.Color).Distinct();
@@ -25,13 +25,13 @@ public abstract class CellGroup(ILogger<CellGroup> logger, int id) : ICellGroup
         _cells.Add(cell);
     }
 
-    public bool FilterOut(Func<ICell, bool> predicate)
+    public bool FilterOut(Func<ICell, bool> predicate, string reason)
     {
         ArgumentNullException.ThrowIfNull(predicate);
-        var cellsToRemove = _cells.Where(predicate).ToList();
+        var cellsToRemove = Cells.Where(predicate).ToList();
         foreach (var cell in cellsToRemove)
         {
-            cell.SetQueen(false);
+            cell.SetQueen(false, reason);
         }
         return cellsToRemove.Count > 0;
     }

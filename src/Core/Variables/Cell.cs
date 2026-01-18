@@ -38,14 +38,20 @@ internal sealed class Cell(ILogger<Cell> logger, int id, ICellGroup row, ICellGr
         _corners.Add(cell);
     }
 
-    public void SetQueen(bool isQueen)
+    public void SetQueen(bool shouldPlaceQueen, string reason)
     {
-        if (isQueen)
-            logger.PlaceQueen(Id);
-        else
-            logger.PlaceCross(Id, "reason");
+        if (_isQueen is not null)
+        {
+            logger.LogWarning("Cell {Id} is already set as a queen: {IsQueen}", Id, _isQueen);
+            return;
+        }
 
-        _isQueen = isQueen;
+        if (shouldPlaceQueen)
+            logger.PlaceQueen(Id, reason);
+        else
+            logger.PlaceCross(Id, reason);
+
+        _isQueen = shouldPlaceQueen;
     }
 
     // #endregion

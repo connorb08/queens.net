@@ -13,7 +13,7 @@ public sealed class Column(ILogger<Column> logger, int id) : CellGroup(logger, i
         {
             Color color = Colors.First();
             logger.LogInformation("All cells in Column {Id} are of color {Color}", Id, color.Id);
-            return color.FilterOut(c => c.Column != this);
+            return color.FilterOut(c => c.Column != this, "Reason-6554");
         }
 
         return RemoveSharedEdges();
@@ -28,7 +28,7 @@ public sealed class Column(ILogger<Column> logger, int id) : CellGroup(logger, i
         foreach (var cell in intersection)
         {
             logger.LogInformation("Column {Id} removing shared edge Cell {CellId}", Id, cell.Id);
-            cell.SetQueen(false);
+            cell.SetQueen(false, "Reason-433");
         }
 
         return trimmed;

@@ -25,7 +25,7 @@ public interface ICellGroup
     /// Filters out the cell group based on specific criteria.
     /// </summary>
     /// <returns>True if a cell was removed.</returns>
-    public bool FilterOut(Func<ICell, bool> predicate);
+    public bool FilterOut(Func<ICell, bool> predicate, string reason);
 
     public bool LocalSearch();
 

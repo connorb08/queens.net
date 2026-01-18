@@ -21,6 +21,6 @@ public interface ICell
     /// true if a new connection is made between either of the cells; false if both cells are already connected.
     /// </returns>
     public void AddCorner(ICell cell);
-    public void SetQueen(bool isQueen);
+    public void SetQueen(bool isQueen, string reason);
 
 }

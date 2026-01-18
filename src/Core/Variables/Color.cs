@@ -1,4 +1,5 @@
 using Queens.Enums;
+using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Core.Variables;
 
@@ -13,14 +14,14 @@ public sealed class Color(ILogger<Color> logger, int id) : CellGroup(logger, id)
         {
             Row row = Rows.First();
             logger.LogInformation("All colors are in Row {Id}", row.Id);
-            return row.FilterOut(c => c.Color != this);
+            return row.FilterOut(c => c.Color != this, $"Reason=377593");
         }
 
         if (Columns.Count() == 1)
         {
             Column column = Columns.First();
             logger.LogInformation("All colors are in Column {Id}", column.Id);
-            return column.FilterOut(c => c.Color != this);
+            return column.FilterOut(c => c.Color != this, $"Reason=983737");
         }
 
         return RemoveSharedEdges();
@@ -35,7 +36,7 @@ public sealed class Color(ILogger<Color> logger, int id) : CellGroup(logger, id)
         foreach (var cell in intersection)
         {
             logger.LogInformation("Color {Id} removing shared edge Cell {CellId}", Id, cell.Id);
-            cell.SetQueen(false);
+            cell.SetQueen(false, $"Reason-123432");
         }
 
         return trimmed;
