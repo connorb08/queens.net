@@ -44,7 +44,7 @@ public sealed class SolutionManager(
         return new Solution()
         {
             SideLength = SideLength,
-            Colors = Colors,
+            Colors = [.. Colors.Select(c => c.RGB)],
             CellColors = CellColors,
             Queens = Queens,
             Removed = Removed

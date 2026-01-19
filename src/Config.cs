@@ -1,18 +1,18 @@
 namespace Queens;
 
-internal interface IConfig
+public interface IConfig
 {
     public string UserAgent { get; }
     public string PageURL { get; }
     public bool Headless { get; }
-    public ICloudflareConfig Cloudflare { get; }
+    public CloudflareConfig Cloudflare { get; }
 }
 
-internal interface ICloudflareConfig
+public readonly record struct CloudflareConfig
 {
-    public string AccountId { get; }
-    public string QueueId { get; }
-    public string ApiToken { get; }
+    public string AccountId { get; init; }
+    public string QueueId { get; init; }
+    public string ApiToken { get; init; }
 }
 
 internal readonly record struct Config : IConfig
@@ -20,5 +20,5 @@ internal readonly record struct Config : IConfig
     public string UserAgent { get; init; }
     public string PageURL { get; init; }
     public bool Headless { get; init; }
-    public ICloudflareConfig Cloudflare { get; init; }
+    public CloudflareConfig Cloudflare { get; init; }
 }

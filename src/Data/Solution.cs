@@ -4,27 +4,24 @@ namespace Queens.Data;
 
 public interface ISolution
 {
+    [JsonPropertyName("sideLength")]
     public int SideLength { get; }
-    public ColorData[] Colors { get; }
+    [JsonPropertyName("colors")]
+    // public ColorData[] Colors { get; }
+    public string[] Colors { get; }
+    [JsonPropertyName("cellColors")]
     public int[] CellColors { get; }
+    [JsonPropertyName("queenPositions")]
     public int[] Queens { get; }
+    [JsonPropertyName("cellsRemoved")]
     public int[] Removed { get; }
 }
 
 public class Solution : ISolution
 {
-    [JsonPropertyName("sideLength")]
     public required int SideLength { get; init; }
-
-    [JsonPropertyName("colors")]
-    public required ColorData[] Colors { get; init; }
-
-    [JsonPropertyName("cellColors")]
+    public required string[] Colors { get; init; }
     public required int[] CellColors { get; init; }
-
-    [JsonPropertyName("queens")]
     public required int[] Queens { get; init; }
-
-    [JsonPropertyName("removed")]
     public required int[] Removed { get; init; }
 }

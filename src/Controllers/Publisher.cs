@@ -5,7 +5,7 @@ using Queens.Data;
 
 namespace Queens.Controllers;
 
-internal sealed class Publisher(ILogger<Publisher> logger, IConfig config) : IDisposable
+public sealed class Publisher(ILogger<Publisher> logger, IConfig config) : IDisposable
 {
     private bool _disposed;
     private readonly Uri _uri = new($"https://api.cloudflare.com/client/v4/accounts/{config.Cloudflare.AccountId}/queues/{config.Cloudflare.QueueId}/messages");
@@ -17,7 +17,7 @@ internal sealed class Publisher(ILogger<Publisher> logger, IConfig config) : IDi
         },
     };
 
-    internal async Task PublishSolution(ISolution solution)
+    public async Task PublishSolution(ISolution solution)
     {
         try
         {

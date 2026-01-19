@@ -12,7 +12,8 @@ internal sealed class Solver(
     IPageController pageController,
     IFactory factory,
     IHostApplicationLifetime lifetime,
-    ISolutionManager solutionManager
+    ISolutionManager solutionManager,
+    Publisher publisher
 ) : BackgroundService
 {
 
@@ -38,7 +39,9 @@ internal sealed class Solver(
     private async Task SolveAndPublishResult()
     {
         Solve();
-        logger.LogInformation("Solution found: {Solution}", solutionManager.ToJson());
+        var solution = solutionManager.GetSolution();
+        await publisher.PublishSolution(solution);
+        logger.LogInformation("Solution found: {Solution}", solution.ToJson());
         return;
     }
 

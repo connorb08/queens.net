@@ -37,6 +37,12 @@ internal class Program
                     Optional = true,
                     ReloadOnChange = true,
                 },
+                new JsonConfigurationSource
+                {
+                    Path = $"secrets.json",
+                    Optional = true,
+                    ReloadOnChange = true,
+                },
                 new EnvironmentVariablesConfigurationSource(),
             }
         }
