@@ -1,11 +1,10 @@
 namespace Queens.Extensions;
 
-
-internal static class SetExtensions
+public static class SetExtensions
 {
     extension<T>(IReadOnlySet<T> set)
     {
-        internal IEnumerable<IReadOnlySet<T>> Combinations()
+        public IEnumerable<IReadOnlySet<T>> Combinations()
         {
             int members = set.Count;
             int choose = 2;

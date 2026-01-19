@@ -1,15 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using Queens.Controllers;
 using Queens.Core;
 using Queens.Core.Variables;
 using Queens.Data;
-using Queens.Interfaces;
 using Queens.Interfaces.Core;
 using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Services;
 
-internal interface IFactory
+public interface IFactory
 {
     public ICellGroup CreateRow(int id);
     public ICellGroup CreateColumn(int id);
@@ -18,14 +18,16 @@ internal interface IFactory
     public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color);
 }
 
-internal class Factory(IServiceProvider serviceProvider) : IFactory
+public class Factory(IServiceProvider serviceProvider) : IFactory
 {
     public IGraph CreateGraph(GameDefinition definition) =>
         new Graph(serviceProvider.GetRequiredService<ILogger<IGraph>>(), this, definition);
 
     public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color)
     {
-        return new Cell(serviceProvider.GetRequiredService<ILogger<Cell>>(), id, row, column, color);
+        var logger = serviceProvider.GetRequiredService<ILogger<Cell>>();
+        var solution = serviceProvider.GetRequiredService<ISolution>();
+        return new Cell(logger, solution, id, row, column, color);
     }
 
     public ICellGroup CreateRow(int id) => new Row(serviceProvider.GetRequiredService<ILogger<Row>>(), id);

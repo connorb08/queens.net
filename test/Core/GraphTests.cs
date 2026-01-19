@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using Queens.Controllers;
 using Queens.Data;
 using Queens.Interfaces.Core;
 using Queens.Services;
@@ -11,6 +12,7 @@ public class GraphTests
     private readonly Factory _factory = new(
         new ServiceCollection()
             .AddLogging()
+            .AddSingleton<ISolution, Solution>()
             .BuildServiceProvider()
     );
     private readonly GameDefinition _definition = new()
@@ -60,12 +62,13 @@ public class GraphTests
         {
             foreach (var cell in graph.Rows.ElementAt(1).Cells)
             {
-                cell.SetQueen(true);
+                cell.SetQueen(true, "Test");
             }
             Assert.NotEqual(1, row.Id);
         }
     }
 
+    // todo: serializable error warning
     [Theory]
     [ClassData(typeof(GraphTestData))]
     public void Graph_WhenConstructed_ShouldConnectCorners(IGraph graph, Dictionary<int, int[]> expectedEdges)

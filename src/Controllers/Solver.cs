@@ -11,12 +11,12 @@ internal sealed class Solver(
     ILogger<Solver> logger,
     IPageController pageController,
     IFactory factory,
-    IHostApplicationLifetime lifetime
+    IHostApplicationLifetime lifetime,
+    ISolution solution
 ) : BackgroundService
 {
 
     private GameDefinition _definition = new();
-    private GameSolution _solution = new();
     private IGraph _graph = null!;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -30,12 +30,15 @@ internal sealed class Solver(
     {
         _definition = await pageController.GetGameDefinition();
         _graph = factory.CreateGraph(_definition);
+        solution.SideLength = _definition.SideLength;
+        solution.Colors = _definition.Colors;
+        solution.CellColors = _definition.CellColors;
     }
 
     private async Task SolveAndPublishResult()
     {
-        _solution = Solve();
-        logger.LogInformation("Solution found: {Solution}", _solution.ToJson());
+        Solve();
+        logger.LogInformation("Solution found: {Solution}", solution.ToJson());
         return;
     }
 
@@ -86,7 +89,7 @@ internal sealed class Solver(
         return false;
     }
 
-    private GameSolution Solve()
+    private ISolution Solve()
     {
 
         int iteration = 0;
@@ -104,7 +107,7 @@ internal sealed class Solver(
         logger.LogInformation("Cells removed: {Cells}", string.Join(", ", removed));
         logger.LogInformation("Cells unsatisfied: {Cells}", string.Join(", ", unsatisfied));
 
-        var solution = new GameSolution();
+        // var solution = new GameSolution();
         return solution;
     }
 

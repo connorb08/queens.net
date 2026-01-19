@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using Queens.Controllers;
 using Queens.Data;
 using Queens.Interfaces.Core;
 using Queens.Services;
@@ -11,6 +12,7 @@ public class GraphTestData : TheoryData<IGraph, Dictionary<int, int[]>>
     private readonly Factory _factory = new(
         new ServiceCollection()
             .AddLogging()
+            .AddSingleton<ISolution, Solution>()
             .BuildServiceProvider()
     );
 
