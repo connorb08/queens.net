@@ -6,6 +6,8 @@ public interface ISolution
 {
     [JsonPropertyName("sideLength")]
     public int SideLength { get; }
+
+    // todo: convert string[] to ColorData[] 
     [JsonPropertyName("colors")]
     // public ColorData[] Colors { get; }
     public string[] Colors { get; }
