@@ -12,7 +12,7 @@ internal sealed class Solver(
     IPageController pageController,
     IFactory factory,
     IHostApplicationLifetime lifetime,
-    ISolution solution
+    ISolutionManager solutionManager
 ) : BackgroundService
 {
 
@@ -30,15 +30,15 @@ internal sealed class Solver(
     {
         _definition = await pageController.GetGameDefinition();
         _graph = factory.CreateGraph(_definition);
-        solution.SideLength = _definition.SideLength;
-        solution.Colors = _definition.Colors;
-        solution.CellColors = _definition.CellColors;
+        solutionManager.SideLength = _definition.SideLength;
+        solutionManager.Colors = _definition.Colors;
+        solutionManager.CellColors = _definition.CellColors;
     }
 
     private async Task SolveAndPublishResult()
     {
         Solve();
-        logger.LogInformation("Solution found: {Solution}", solution.ToJson());
+        logger.LogInformation("Solution found: {Solution}", solutionManager.ToJson());
         return;
     }
 
@@ -106,6 +106,12 @@ internal sealed class Solver(
         logger.LogInformation("Cells with queens: {Cells}", string.Join(", ", queens));
         logger.LogInformation("Cells removed: {Cells}", string.Join(", ", removed));
         logger.LogInformation("Cells unsatisfied: {Cells}", string.Join(", ", unsatisfied));
+
+
+        var solution = solutionManager.GetSolution();
+        var dto = new CloudflareDTO(solution);
+
+        logger.LogInformation("Cloudflare DTO: {DTO}", dto.ToJson());
 
         // var solution = new GameSolution();
         return solution;

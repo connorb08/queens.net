@@ -18,7 +18,7 @@ internal static class HostExtensions
             builder.Services
                 .AddSingleton<IFactory, Factory>()
                 .AddSingleton<IPageController, PageController>()
-                .AddSingleton<ISolution, Solution>()
+                .AddSingleton<ISolutionManager, SolutionManager>()
                 .AddHostedService<Solver>();
             return builder;
         }
