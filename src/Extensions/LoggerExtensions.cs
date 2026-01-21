@@ -29,7 +29,7 @@ internal static partial class LoggerExtensions
     {
 
         [LoggerMessage(
-            Level = LogLevel.Debug,
+            Level = LogLevel.Trace,
             EventId = Events.AnalyzeGroup,
             EventName = nameof(AnalyzeGroup),
             Message = "Analyzing {GroupName}({GroupId}){ColorName}"

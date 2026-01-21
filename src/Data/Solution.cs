@@ -9,8 +9,8 @@ public interface ISolution
 
     // todo: convert string[] to ColorData[] 
     [JsonPropertyName("colors")]
-    // public ColorData[] Colors { get; }
-    public string[] Colors { get; }
+    public ColorData[] Colors { get; }
+    // public string[] Colors { get; }
     [JsonPropertyName("cellColors")]
     public int[] CellColors { get; }
     [JsonPropertyName("queenPositions")]
@@ -22,7 +22,7 @@ public interface ISolution
 public class Solution : ISolution
 {
     public required int SideLength { get; init; }
-    public required string[] Colors { get; init; }
+    public required ColorData[] Colors { get; init; }
     public required int[] CellColors { get; init; }
     public required int[] Queens { get; init; }
     public required int[] Removed { get; init; }

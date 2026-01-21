@@ -23,7 +23,7 @@ public sealed class Publisher(ILogger<Publisher> logger, IConfig config) : IDisp
         {
             string accountId = config.Cloudflare.AccountId;
             string queueId = config.Cloudflare.QueueId;
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_uri, new CloudflareDTO(solution));
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_uri, new CloudflareDTO(solution, []));
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             logger.LogInformation($"Response: {responseBody}");

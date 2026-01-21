@@ -112,7 +112,7 @@ internal sealed class Solver(
 
 
         var solution = solutionManager.GetSolution();
-        var dto = new CloudflareDTO(solution);
+        var dto = new CloudflareDTO(solution, []);
 
         logger.LogInformation("Cloudflare DTO: {DTO}", dto.ToJson());
 
