@@ -2,10 +2,9 @@ namespace Queens;
 
 public interface IConfig
 {
-    public string UserAgent { get; }
     public string PageURL { get; }
-    public bool Headless { get; }
     public CloudflareConfig Cloudflare { get; }
+    public BrowserConfig Browser { get; }
 }
 
 public readonly record struct CloudflareConfig
@@ -15,10 +14,16 @@ public readonly record struct CloudflareConfig
     public string ApiToken { get; init; }
 }
 
-internal readonly record struct Config : IConfig
+public readonly record struct BrowserConfig
 {
     public string UserAgent { get; init; }
-    public string PageURL { get; init; }
     public bool Headless { get; init; }
+
+}
+
+internal readonly record struct Config : IConfig
+{
+    public string PageURL { get; init; }
     public CloudflareConfig Cloudflare { get; init; }
+    public BrowserConfig Browser { get; init; }
 }

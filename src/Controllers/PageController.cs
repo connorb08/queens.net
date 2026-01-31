@@ -41,11 +41,11 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
         _playwright = await Playwright.CreateAsync();
         _browser = await _playwright.Chromium.LaunchAsync(new()
         {
-            Headless = config.Headless
+            Headless = config.Browser.Headless
         });
         _context = await _browser.NewContextAsync(new()
         {
-            UserAgent = config.UserAgent
+            UserAgent = config.Browser.UserAgent
         });
         _page = await _context.NewPageAsync();
     }

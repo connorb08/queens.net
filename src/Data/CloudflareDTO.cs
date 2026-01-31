@@ -7,8 +7,8 @@ namespace Queens.Data;
 
 public class CloudflareDTOBody(ISolution solution, GameStep[] steps)
 {
-    [JsonPropertyName("id")]
-    public string Id { get; } = "queens";
+    [JsonPropertyName("queueKey")]
+    public string QueueKey { get; } = "queens";
     [JsonPropertyName("solution")]
     public ISolution Solution { get; } = solution;
     [JsonPropertyName("steps")]
