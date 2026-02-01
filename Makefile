@@ -28,10 +28,14 @@ IMAGE      := $(IMAGE_NAME):$(IMAGE_TAG)
 TF      := terraform
 TF_DIR  ?= inf
 
+# Environment configuration
+AWS_ID     ?= 
+AWS_REGION ?= us-east-2
+
 # Browser (from dev container env)
 BROWSER ?=
 
-.PHONY: help env restore build run watch test coverage clean publish format docker-build docker-run docker-push tf-init tf-validate tf-plan tf-apply tf-destroy
+.PHONY: help env restore build run watch test coverage clean publish format docker-build docker-tag docker-run docker-push tf-init tf-validate tf-plan tf-apply tf-destroy
 
 help: ## Show available targets
 	@awk 'BEGIN { FS = ":.*##" } /^[a-zA-Z0-9_.-]+:.*##/ { printf "  %-18s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -99,13 +103,17 @@ docker-build: ## Build Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
 	$(DOCKER) build -t $(IMAGE) -f $(DOCKERFILE) $(SRC_DIR)
 
+docker-tag: docker-build
+	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
+	$(DOCKER) tag "$(IMAGE):latest" "$(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest"
+
 docker-run: ## Run Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) run --rm $(IMAGE)
+	$(DOCKER) run --env-file .env --rm -it $(IMAGE)
 
-docker-push: ## Push Docker image
+docker-push: docker-tag
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) push $(IMAGE)
+	$(DOCKER) push $(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest
 
 tf-init: ## Terraform init in $(TF_DIR)
 	@command -v $(TF) >/dev/null || { echo "terraform not found on PATH"; exit 1; }
@@ -127,3 +135,6 @@ tf-apply: ## Terraform apply
 tf-destroy: ## Terraform destroy
 	@command -v $(TF) >/dev/null || { echo "terraform not found on PATH"; exit 1; }
 	$(TF) -chdir="$(TF_DIR)" destroy
+
+deploy: docker-push
+	aws lambda update-function-code --function-name queens --image-uri $(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest

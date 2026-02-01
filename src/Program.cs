@@ -1,8 +1,20 @@
-﻿using Microsoft.Extensions.Configuration.EnvironmentVariables;
+﻿
+
+using System.Text.Json;
+
+// using Amazon.Lambda.APIGatewayEvents;
+// using Amazon.Lambda.Core;
+
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 
+// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
+// [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+
+
 namespace Queens;
+
 
 internal class Program
 {
@@ -17,7 +29,7 @@ internal class Program
             .RunAsync();
     }
 
-    private static HostApplicationBuilder BuildHost(string[] args, string environment) => Host.CreateEmptyApplicationBuilder(new()
+    public static HostApplicationBuilder BuildHost(string[] args, string environment) => Host.CreateEmptyApplicationBuilder(new()
     {
         ApplicationName = "Queens.Net",
         EnvironmentName = environment,
@@ -48,3 +60,39 @@ internal class Program
         }
     });
 }
+
+// public class Function
+// {
+
+//     public static async Task<APIGatewayProxyResponse> FunctionHandler(
+//         APIGatewayProxyRequest request,
+//         ILambdaContext context)
+//     {
+//         try
+//         {
+//             await Program.BuildHost([], Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? Environments.Development)
+//             .LoadAndRegisterConfig()
+//             .AddLogging()
+//             .RegisterServices()
+//             .Build()
+//             .RunAsync();
+
+//             return new APIGatewayProxyResponse
+//             {
+//                 StatusCode = 200,
+//                 Body = JsonSerializer.Serialize(new { message = "Success" }),
+//                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+//             };
+//         }
+//         catch (Exception ex)
+//         {
+//             context.Logger.LogLine($"Error: {ex.Message}\n{ex.StackTrace}");
+//             return new APIGatewayProxyResponse
+//             {
+//                 StatusCode = 500,
+//                 Body = JsonSerializer.Serialize(new { error = ex.Message }),
+//                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+//             };
+//         }
+//     }
+// }

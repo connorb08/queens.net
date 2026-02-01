@@ -41,7 +41,29 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
         _playwright = await Playwright.CreateAsync();
         _browser = await _playwright.Chromium.LaunchAsync(new()
         {
-            Headless = config.Browser.Headless
+            // ExecutablePath = "/usr/bin/chromium-browser",
+            Headless = config.Browser.Headless,
+            Args = [
+                "--no-sandbox",
+                // "--headless",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--disable-web-security",
+                "--disable-features=IsolateOrigins,site-per-process",
+                "--disable-site-isolation-trials",
+                "--disable-features=site-per-process",
+                "--disable-accelerated-2d-canvas",
+                "--disable-background-timer-throttling",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-renderer-backgrounding",
+                "--disable-features=TranslateUI",
+                "--disable-ipc-flooding-protection",
+                "--disable-default-apps",
+                // "--user-data-dir=/tmp/chrome-user-data",
+                "--window-size=1920,1080",
+            ]
         });
         _context = await _browser.NewContextAsync(new()
         {
