@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# Run the container interactively and clean up on exit
-docker run --rm -it queens.net
