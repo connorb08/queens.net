@@ -3,19 +3,20 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-# .NET configuration
-SLN      := $(shell find . -maxdepth 2 -name '*.sln' -print -quit)
-CSPROJ   := $(shell find . -name '*.csproj' -print -quit)
-TARGET   := $(if $(SLN),$(SLN),$(CSPROJ))
-CONFIG   ?= Debug
-FRAMEWORK?=
-RUNTIME  ?=
-OUTDIR   ?= bin/$(CONFIG)
-RUN_ARGS ?=
-DOTNET   := dotnet
-
 SRC_DIR := ./src
 TEST_DIR := ./test
+
+# .NET configuration
+SLN         := ./queens.net.sln
+CSPROJ      := $(SRC_DIR)/Queens.csproj
+TEST_CSPROJ := $(TEST_DIR)/Tests.csproj
+TARGET      := $(if $(SLN),$(SLN),$(CSPROJ))
+CONFIG      ?= Debug
+FRAMEWORK   ?= net10.0
+RUNTIME     ?= 
+OUTDIR      ?= bin/$(CONFIG)
+RUN_ARGS    ?=
+DOTNET      := dotnet
 
 # Docker configuration
 DOCKER     := docker
@@ -43,6 +44,7 @@ help: ## Show available targets
 env: ## Show detected environment info
 	@echo "Solution:  $(SLN)"
 	@echo "Project:   $(CSPROJ)"
+	@echo "Test Project:   $(TEST_CSPROJ)"
 	@echo "Config:    $(CONFIG)"
 	@echo "Framework: $(FRAMEWORK)"
 	@echo "Runtime:   $(RUNTIME)"
@@ -52,7 +54,7 @@ env: ## Show detected environment info
 
 restore: ## Restore NuGet packages
 	@[ -n "$(TARGET)" ] || { echo "No .sln or .csproj found."; exit 1; }
-	$(DOTNET) restore "$(TARGET)"
+	$(DOTNET) restore $(TARGET)
 
 build: restore ## Build the project/solution
 	$(DOTNET) build "$(TARGET)" -c "$(CONFIG)" $(if $(FRAMEWORK),-f "$(FRAMEWORK)") $(if $(RUNTIME),-r "$(RUNTIME)")

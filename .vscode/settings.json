@@ -2,6 +2,9 @@
   "[csharp]": {
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
+  "[makefile]": {
+    "editor.insertSpaces": false
+  },
   "editor.formatOnSave": true,
   "dotnet.codeLens.enableReferencesCodeLens": false,
   "files.exclude": {

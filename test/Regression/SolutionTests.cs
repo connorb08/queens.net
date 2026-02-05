@@ -25,6 +25,8 @@ public class SolutionTests
         // var solver = new Solver(graph);
 
         // Assert.Equal(expectedSolution, solver.Solve());
+        Assert.Equal(definition, new GameDefinition());
+        Assert.NotNull(expectedSolution);
         Assert.Equal(1, 1);
     }
 
@@ -34,6 +36,12 @@ internal class SolutionTestData : TheoryData<GameDefinition, Solution>
 {
     public SolutionTestData()
     {
-        // Add(new(), new());
+        Add(new(), new() {
+            SideLength = 4,
+            Colors = [],
+            CellColors = [],
+            Queens = [],
+            Removed = []
+        });
     }
 }
