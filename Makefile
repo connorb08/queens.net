@@ -4,6 +4,7 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 SRC_DIR := ./src
+PLAYWRIGHT_DIR := ./playwright
 TEST_DIR := ./test
 
 # .NET configuration
@@ -103,7 +104,7 @@ format: ## Format code (requires dotnet-format)
 
 docker-build: ## Build Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) build -t $(IMAGE) -f $(DOCKERFILE) $(SRC_DIR)
+	$(DOCKER) build -t $(IMAGE) -f $(DOCKERFILE) .
 
 docker-tag: docker-build
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
@@ -112,6 +113,10 @@ docker-tag: docker-build
 docker-run: ## Run Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
 	$(DOCKER) run --env-file .env --rm -it $(IMAGE)
+
+docker-attach: ## Run Docker image
+	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
+	$(DOCKER) run --env-file .env --rm -it $(IMAGE) bash
 
 docker-push: docker-tag
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }

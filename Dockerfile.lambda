@@ -1,0 +1,62 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS playwright
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/
+COPY ./playwright /app
+
+WORKDIR /app
+RUN dotnet build
+RUN pwsh bin/Debug/net10.0/playwright.ps1 install chromium
+
+FROM public.ecr.aws/lambda/dotnet:10-arm64 AS runtime
+
+RUN dnf -y update && \
+  dnf -y install \
+  nspr \
+  nss \
+  nss-util \
+  atk \
+  dbus-libs \
+  expat \
+  at-spi2-atk \
+  libX11 \
+  libXcomposite \
+  libXdamage \
+  libXext \
+  libXfixes \
+  libXrandr \
+  mesa-libgbm \
+  libxcb \
+  libxkbcommon \
+  systemd-libs \
+  alsa-lib && \
+  dnf clean all
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build
+
+COPY ./src /app/src
+COPY --from=playwright /app /app/playwright
+WORKDIR /app/src
+RUN dotnet publish -c Release -o /app/publish
+RUN chmod +x /app/publish/.playwright/node/*/node
+
+# FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS runtime
+
+FROM runtime
+
+COPY --from=playwright /opt /opt
+COPY --from=build /app/publish /var/task
+
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/
+
+# CMD ["./Queens.dll"]
+# RUN adduser --disabled-password --gecos "" appuser
+# USER appuser
+
+# ENV AWS_LAMBDA_FUNCTION_HANDLER="Queens::Queens.Program::FunctionHandler"
+WORKDIR /var/task
+
+# CMD [ "Queens::Queens.Program::FunctionHandler" ]
+
+# ENTRYPOINT ["/lambda-entrypoint.sh"]
+ENTRYPOINT ["./Queens"]
