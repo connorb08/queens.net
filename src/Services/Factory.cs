@@ -1,11 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
-using Queens.Controllers;
 using Queens.Core;
 using Queens.Core.Variables;
 using Queens.Data;
-using Queens.Interfaces.Core;
-using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Services;
 

@@ -1,8 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
-using Queens.Controllers;
+using Queens.Core;
 using Queens.Data;
-using Queens.Interfaces.Core;
 using Queens.Services;
 
 namespace Tests.Core;

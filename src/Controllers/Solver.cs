@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Hosting;
 
+using Queens.Core;
 using Queens.Data;
-using Queens.Interfaces;
-using Queens.Interfaces.Core;
 using Queens.Services;
 
 namespace Queens.Controllers;

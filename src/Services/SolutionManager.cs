@@ -1,5 +1,5 @@
+using Queens.Core.Variables;
 using Queens.Data;
-using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Services;
 

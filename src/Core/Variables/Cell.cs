@@ -1,7 +1,31 @@
-using Queens.Interfaces.Core.Variables;
 using Queens.Services;
 
 namespace Queens.Core.Variables;
+
+
+public interface ICell
+{
+    public int Id { get; }
+    public bool Satisfied { get; }
+    public bool IsQueen { get; }
+    public IEnumerable<ICell> Edges { get; }
+
+    public Row Row { get; }
+    public Column Column { get; }
+    public Color Color { get; }
+
+
+    /// <summary>
+    /// Adds the specified element to a set.
+    /// </summary>
+    /// <param name="cell"></param>
+    /// <returns>
+    /// true if a new connection is made between either of the cells; false if both cells are already connected.
+    /// </returns>
+    public void AddCorner(ICell cell);
+    public void SetQueen(bool isQueen, string reason);
+
+}
 
 internal sealed class Cell(ILogger<Cell> logger, ISolutionManager solutionManager, int id, ICellGroup row, ICellGroup column, ICellGroup color) : ICell
 {

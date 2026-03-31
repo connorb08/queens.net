@@ -1,9 +1,18 @@
+using Queens.Core.Variables;
 using Queens.Data;
-using Queens.Interfaces.Core;
-using Queens.Interfaces.Core.Variables;
 using Queens.Services;
 
 namespace Queens.Core;
+
+public interface IGraph
+{
+    public IReadOnlySet<ICellGroup> Rows { get; }
+    public IReadOnlySet<ICellGroup> Columns { get; }
+    public IReadOnlySet<ICellGroup> Colors { get; }
+    public IReadOnlySet<ICell> Cells { get; }
+    public IReadOnlySet<ICell> Removed { get; }
+    public IReadOnlySet<ICell> Queens { get; }
+}
 
 internal sealed class Graph : IGraph
 {

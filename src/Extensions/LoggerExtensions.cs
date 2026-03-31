@@ -1,5 +1,5 @@
+using Queens.Core.Variables;
 using Queens.Enums;
-using Queens.Interfaces.Core.Variables;
 
 namespace Queens.Extensions;
 

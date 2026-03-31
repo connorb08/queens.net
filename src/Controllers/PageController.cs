@@ -4,9 +4,13 @@ using System.Text.RegularExpressions;
 using Microsoft.Playwright;
 
 using Queens.Data;
-using Queens.Interfaces;
 
 namespace Queens.Controllers;
+
+internal interface IPageController : IAsyncDisposable
+{
+    public Task<GameDefinition> GetGameDefinition();
+}
 
 internal static partial class RegexPatterns
 {

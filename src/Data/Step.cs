@@ -1,6 +1,6 @@
-using Queens.Interfaces.Core.Variables;
+using Queens.Core.Variables;
 
-namespace Queens.Interfaces.Data;
+namespace Queens.Data;
 
 internal interface IStep
 {

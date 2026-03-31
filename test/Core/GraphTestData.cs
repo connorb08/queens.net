@@ -1,8 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
-using Queens.Controllers;
+using Queens.Core;
 using Queens.Data;
-using Queens.Interfaces.Core;
 using Queens.Services;
 namespace Tests.Core;
 
@@ -13,6 +12,7 @@ public class GraphTestData : TheoryData<IGraph, Dictionary<int, int[]>>
         new ServiceCollection()
             .AddLogging()
             .AddSingleton<ISolution, Solution>()
+            .AddSingleton<ISolutionManager, SolutionManager>()
             .BuildServiceProvider()
     );
 
