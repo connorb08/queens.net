@@ -17,16 +17,16 @@ public sealed class Publisher(ILogger<Publisher> logger, IConfig config) : IDisp
         },
     };
 
-    public async Task PublishSolution(ISolution solution)
+    public async Task PublishSolution(Solution solution)
     {
         try
         {
             string accountId = config.Cloudflare.AccountId;
             string queueId = config.Cloudflare.QueueId;
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_uri, new CloudflareDTO(solution, []));
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            logger.LogInformation($"Response: {responseBody}");
+            // HttpResponseMessage response = await _httpClient.PostAsJsonAsync(_uri, new CloudflareDTO(solution, []));
+            // response.EnsureSuccessStatusCode();
+            // string responseBody = await response.Content.ReadAsStringAsync();
+            // logger.LogInformation($"Response: {responseBody}");
         }
         catch (Exception ex)
         {

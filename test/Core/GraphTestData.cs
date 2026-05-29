@@ -11,8 +11,7 @@ public class GraphTestData : TheoryData<IGraph, Dictionary<int, int[]>>
     private readonly Factory _factory = new(
         new ServiceCollection()
             .AddLogging()
-            .AddSingleton<ISolution, Solution>()
-            .AddSingleton<ISolutionManager, SolutionManager>()
+            .AddSingleton<Solution>()
             .BuildServiceProvider()
     );
 

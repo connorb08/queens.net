@@ -10,7 +10,7 @@ public interface IConfig
 public readonly record struct CloudflareConfig
 {
     public string AccountId { get; init; }
-    public string QueueId { get; init; }
+    public string DatabaseId { get; init; }
     public string ApiToken { get; init; }
 }
 

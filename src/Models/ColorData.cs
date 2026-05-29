@@ -4,6 +4,7 @@ namespace Queens.Data;
 
 public readonly record struct ColorData
 {
+
     [JsonPropertyName("id")]
     public int Id { get; init; }
 
@@ -12,4 +13,5 @@ public readonly record struct ColorData
 
     [JsonPropertyName("rgb")]
     public string RGB { get; init; }
+
 }

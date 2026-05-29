@@ -1,10 +1,11 @@
 {
   "Logging": {
     "LogLevel": {
-      "Default": "Information"
+      "Default": "Debug",
+      "Microsoft.Hosting.Lifetime": "Warning",
+      "Microsoft.Extensions.Hosting.Internal.Host": "Information"
     }
   },
-  "PageURL": "https://www.linkedin.com/games/view/queens/desktop",
   "Browser": {
     "Headless": true,
     "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -13,5 +14,11 @@
       "Height": 1080,
       "Width": 1920
     }
-  }
+  },
+  "Cloudflare": {
+    "AccountId": "",
+    "DatabaseId": "",
+    "ApiToken": ""
+  },
+  "PageURL": "https://www.linkedin.com/games/view/queens/desktop"
 }

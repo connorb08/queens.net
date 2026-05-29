@@ -40,7 +40,7 @@ internal sealed class Graph : IGraph
         }
 
         // var cellsById = new ICell[definition.CellColors.Length];
-        for (int cellId = 0; cellId < definition.CellColors.Length; cellId++)
+        for (int cellId = 0; cellId < definition.CellColors.Count; cellId++)
         {
             int rowId = cellId / definition.SideLength;
             int columnId = cellId % definition.SideLength;

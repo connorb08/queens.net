@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Queens.Controllers;
+using Queens.Data;
 using Queens.Services;
 
 namespace Queens.Extensions;
@@ -17,7 +18,7 @@ internal static class HostExtensions
             builder.Services
                 .AddSingleton<IFactory, Factory>()
                 .AddSingleton<IPageController, PageController>()
-                .AddSingleton<ISolutionManager, SolutionManager>()
+                .AddSingleton<Solution>()
                 .AddSingleton<Publisher>()
                 .AddHostedService<Solver>();
             return builder;

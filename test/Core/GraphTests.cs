@@ -11,7 +11,7 @@ public class GraphTests
     private readonly Factory _factory = new(
         new ServiceCollection()
             .AddLogging()
-            .AddSingleton<ISolution, Solution>()
+            .AddSingleton<Solution>()
             .BuildServiceProvider()
     );
     private readonly GameDefinition _definition = new()

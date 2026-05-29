@@ -4,13 +4,14 @@ namespace Queens.Data;
 
 public readonly record struct GameDefinition
 {
+
     [JsonPropertyName("sideLength")]
     public int SideLength { get; init; }
 
     [JsonPropertyName("colors")]
-    public ColorData[] Colors { get; init; }
+    public List<ColorData> Colors { get; init; }
 
     [JsonPropertyName("cellColors")]
-    public int[] CellColors { get; init; }
+    public List<int> CellColors { get; init; }
 
 }

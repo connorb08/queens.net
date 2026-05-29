@@ -1,3 +1,4 @@
+using Queens.Data;
 using Queens.Services;
 
 namespace Queens.Core.Variables;
@@ -27,7 +28,7 @@ public interface ICell
 
 }
 
-internal sealed class Cell(ILogger<Cell> logger, ISolutionManager solutionManager, int id, ICellGroup row, ICellGroup column, ICellGroup color) : ICell
+internal sealed class Cell(ILogger<Cell> logger, Solution solution, int id, ICellGroup row, ICellGroup column, ICellGroup color) : ICell
 {
 
     // #region Fields
@@ -77,14 +78,14 @@ internal sealed class Cell(ILogger<Cell> logger, ISolutionManager solutionManage
 
         if (shouldPlaceQueen)
         {
-            solutionManager.AddQueen(this);
+            solution.AddQueen(this);
             logger.PlaceQueen(Id, reason);
             foreach (var cell in Edges)
                 cell.SetQueen(false, $"Cell cannot be a queen because it is an edge of Cell {Id}");
         }
         else
         {
-            solutionManager.AddCross(this);
+            solution.AddCross(this);
             logger.PlaceCross(Id, reason);
         }
 

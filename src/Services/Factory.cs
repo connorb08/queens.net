@@ -23,8 +23,8 @@ public class Factory(IServiceProvider serviceProvider) : IFactory
     public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<Cell>>();
-        var solutionManager = serviceProvider.GetRequiredService<ISolutionManager>();
-        return new Cell(logger, solutionManager, id, row, column, color);
+        var solution = serviceProvider.GetRequiredService<Solution>();
+        return new Cell(logger, solution, id, row, column, color);
     }
 
     public ICellGroup CreateRow(int id) => new Row(serviceProvider.GetRequiredService<ILogger<Row>>(), id);
