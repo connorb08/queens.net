@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS playwright
+FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS browser
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/
-COPY ./playwright /app
+COPY ./Browser /app
 
 WORKDIR /app
 RUN dotnet build
@@ -28,14 +28,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build
 
 COPY ./src /app/src
-COPY --from=playwright /app /app/playwright
+COPY --from=browser /app /app/Browser
 WORKDIR /app/src
 RUN dotnet publish -c Release -o /app/publish
 RUN chmod +x /app/publish/.playwright/node/*/node
 
 FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS runtime
 
-COPY --from=playwright /opt /opt
+COPY --from=browser /opt /opt
 COPY --from=deps /lib/aarch64-linux-gnu /lib/aarch64-linux-gnu
 COPY --from=build /app/publish /app
 
@@ -43,3 +43,5 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/opt/
 
 WORKDIR /app
 CMD ["./Queens.dll"]
+
+# TODO: publish lambda project correctly in container

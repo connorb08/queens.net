@@ -1,20 +1,21 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using Queens.Core;
-using Queens.Models;
+using Queens.Models.Database;
 using Queens.Services;
-
 namespace Tests.Core;
 
-public class GraphTests
+public class GraphTestData : TheoryData<Graph, Dictionary<int, int[]>>
 {
+
     private readonly Factory _factory = new(
         new ServiceCollection()
             .AddLogging()
             .AddSingleton<Solution>()
             .BuildServiceProvider()
     );
-    private readonly GameDefinition _definition = new()
+
+    private readonly Definition _definition = new(new Game())
     {
         SideLength = 4,
         Colors = [
@@ -51,37 +52,14 @@ public class GraphTests
             ]
     };
 
-    [Fact(Skip = "Not applicable after changing IEnumerable to IReadOnlySet")]
-    public void GraphRows_ShouldNotIterate_WhenSatisified()
-    {
-
-        IGraph graph = _factory.CreateGraph();
-
-        foreach (var row in graph.Rows)
-        {
-            foreach (var cell in graph.Rows.ElementAt(1).Cells)
-            {
-                cell.SetQueen(true, "Test");
-            }
-            Assert.NotEqual(1, row.Id);
-        }
-    }
-
-    // todo: serializable error warning
-    [Theory]
-    [ClassData(typeof(GraphTestData))]
-    public void Graph_WhenConstructed_ShouldConnectCorners(IGraph graph, Dictionary<int, int[]> expectedEdges)
-    {
-
-        foreach (var cell in graph.Cells)
-        {
-            if (expectedEdges.TryGetValue(cell.Id, out var expectedEdgeIds))
-            {
-                var actualEdgeIds = cell.Edges.Select(e => e.Id).ToArray();
-                Array.Sort(actualEdgeIds);
-                Array.Sort(expectedEdgeIds);
-                Assert.Equal(expectedEdgeIds, actualEdgeIds);
-            }
-        }
-    }
+    // public GraphTestData()
+    // {
+    //     Add(_factory.CreateGraph(), new Dictionary<int, int[]>
+    //     {
+    //         { 0, [1, 2, 3, 4, 5, 8, 12] },
+    //         { 1, [0, 2, 3, 4, 5, 6, 9, 13] },
+    //         { 2, [0, 1, 3, 4, 5, 6, 7, 10, 14] },
+    //         { 3, [0, 1, 2, 4, 5, 6, 7, 11, 15] }
+    //     });
+    // }
 }

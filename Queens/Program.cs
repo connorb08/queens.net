@@ -2,13 +2,11 @@
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
 
-
 namespace Queens;
-
 
 public class Program
 {
-    static async Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
         string environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? Environments.Development;
         await BuildHost(args, environment)
@@ -19,7 +17,7 @@ public class Program
             .RunAsync();
     }
 
-    public static HostApplicationBuilder BuildHost(string[] args, string environment) => Host.CreateEmptyApplicationBuilder(new()
+    private static HostApplicationBuilder BuildHost(string[] args, string environment) => Host.CreateEmptyApplicationBuilder(new()
     {
         ApplicationName = "Queens.Net",
         EnvironmentName = environment,

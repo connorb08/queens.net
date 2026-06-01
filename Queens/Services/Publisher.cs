@@ -53,6 +53,7 @@ public sealed class Publisher(
         }
         catch (Exception ex)
         {
+            Environment.ExitCode = 99;
             logger.LogError(ex, "An error occurred while publishing the solution.");
             if (response is not null)
             {

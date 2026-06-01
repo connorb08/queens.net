@@ -8,6 +8,7 @@ resource "aws_lambda_function" "queens_function" {
   memory_size   = 4096
   timeout       = 120
   architectures = ["arm64"]
+  handler       = "Lambda::Lambda.Function::FunctionHandler"
 
   environment {
     variables = {
