@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 
 using Queens.Controllers;
-using Queens.Data;
+using Queens.Models;
 
 
 namespace Tests.Regression;
@@ -36,7 +36,8 @@ internal class SolutionTestData : TheoryData<GameDefinition, Solution>
 {
     public SolutionTestData()
     {
-        Add(new(), new() {
+        Add(new(), new()
+        {
             SideLength = 4,
             Colors = [],
             CellColors = [],

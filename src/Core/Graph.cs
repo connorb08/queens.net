@@ -1,20 +1,10 @@
 using Queens.Core.Variables;
-using Queens.Data;
+using Queens.Models.Database;
 using Queens.Services;
 
 namespace Queens.Core;
 
-public interface IGraph
-{
-    public IReadOnlySet<ICellGroup> Rows { get; }
-    public IReadOnlySet<ICellGroup> Columns { get; }
-    public IReadOnlySet<ICellGroup> Colors { get; }
-    public IReadOnlySet<ICell> Cells { get; }
-    public IReadOnlySet<ICell> Removed { get; }
-    public IReadOnlySet<ICell> Queens { get; }
-}
-
-internal sealed class Graph : IGraph
+public class Graph(ILogger<Graph> logger, Factory factory, Definition definition)
 {
     private readonly HashSet<ICell> _cells = [];
     private readonly HashSet<ICellGroup> _rows = [];
@@ -28,7 +18,7 @@ internal sealed class Graph : IGraph
     public IReadOnlySet<ICell> Removed => _cells.Where(cell => cell.Satisfied && !cell.IsQueen).ToHashSet().AsReadOnly();
     public IReadOnlySet<ICell> Queens => _cells.Where(cell => cell.Satisfied && cell.IsQueen).ToHashSet().AsReadOnly();
 
-    internal Graph(ILogger<IGraph> logger, IFactory factory, GameDefinition definition)
+    public Task Create() => Task.Run(() =>
     {
         logger.LogInformation("Constructing graph with side length {SideLength}", definition.SideLength);
         for (int i = 0; i < definition.SideLength; i++)
@@ -81,5 +71,60 @@ internal sealed class Graph : IGraph
                 topRightCell.AddCorner(cell);
             }
         }
-    }
+    });
+
+    // internal Graph(ILogger<Graph> logger, Factory factory, Definition definition)
+    // {
+    //     logger.LogInformation("Constructing graph with side length {SideLength}", definition.SideLength);
+    //     for (int i = 0; i < definition.SideLength; i++)
+    //     {
+    //         string colorName = definition.Colors.First(c => c.Id == i).Name;
+    //         _rows.Add(factory.CreateRow(_rows.Count));
+    //         _columns.Add(factory.CreateColumn(_columns.Count));
+    //         _colors.Add(factory.CreateColor(_colors.Count, colorName));
+    //     }
+
+    //     // var cellsById = new ICell[definition.CellColors.Length];
+    //     for (int cellId = 0; cellId < definition.CellColors.Count; cellId++)
+    //     {
+    //         int rowId = cellId / definition.SideLength;
+    //         int columnId = cellId % definition.SideLength;
+    //         int colorId = definition.CellColors[cellId];
+
+    //         var row = _rows.ElementAt(rowId);
+    //         var column = _columns.ElementAt(columnId);
+    //         var color = _colors.ElementAt(colorId);
+    //         ICell cell = factory.CreateCell(cellId, row, column, color);
+
+    //         _cells.Add(cell);
+    //         row.AddCell(cell);
+    //         column.AddCell(cell);
+    //         color.AddCell(cell);
+    //     }
+
+    //     for (int cellId = 0; cellId < _cells.Count; cellId++)
+    //     {
+    //         int rowId = cellId / definition.SideLength;
+    //         int columnId = cellId % definition.SideLength;
+    //         ICell cell = _cells.ElementAt(cellId);
+
+    //         // Add top-left corner if it exists
+    //         if (rowId > 0 && columnId > 0)
+    //         {
+    //             int topLeftId = (rowId - 1) * definition.SideLength + (columnId - 1);
+    //             ICell topLeftCell = _cells.ElementAt(topLeftId);
+    //             cell.AddCorner(topLeftCell);
+    //             topLeftCell.AddCorner(cell);
+    //         }
+
+    //         // Add top-right corner if it exists
+    //         if (rowId > 0 && columnId < definition.SideLength - 1)
+    //         {
+    //             int topRightId = (rowId - 1) * definition.SideLength + (columnId + 1);
+    //             ICell topRightCell = _cells.ElementAt(topRightId);
+    //             cell.AddCorner(topRightCell);
+    //             topRightCell.AddCorner(cell);
+    //         }
+    //     }
+    // }
 }

@@ -11,10 +11,10 @@ resource "aws_lambda_function" "queens_function" {
 
   environment {
     variables = {
-      CLOUDFLARE__QUEUEID   = var.cloudflare_queue_id
-      CLOUDFLARE__APITOKEN  = var.cloudflare_api_token
-      CLOUDFLARE__ACCOUNTID = var.cloudflare_account_id
-      DOTNET_ENVIRONMENT    = var.dotnet_env
+      CLOUDFLARE__DATABASEID = var.cloudflare_database_id
+      CLOUDFLARE__APITOKEN   = var.cloudflare_api_token
+      CLOUDFLARE__ACCOUNTID  = var.cloudflare_account_id
+      DOTNET_ENVIRONMENT     = var.dotnet_env
     }
   }
 

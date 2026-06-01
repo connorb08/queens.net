@@ -43,4 +43,3 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/opt/
 
 WORKDIR /app
 CMD ["./Queens.dll"]
-

@@ -1,63 +1,66 @@
 using Microsoft.Extensions.Hosting;
 
 using Queens.Core;
-using Queens.Data;
-using Queens.Services;
+using Queens.Models.Database;
 
-namespace Queens.Controllers;
+namespace Queens.Services;
 
 internal sealed class Solver(
     ILogger<Solver> logger,
-    IPageController pageController,
-    IFactory factory,
-    IHostApplicationLifetime lifetime,
-    Solution solution,
-    Publisher publisher
-) : BackgroundService
+    Definition definition,
+    Graph graph
+)
 {
 
-    private GameDefinition _definition = new();
-    private IGraph _graph = null!;
-
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    public Task Solve() => Task.Run(() =>
     {
-        await Setup();
-        await SolveAndPublishResult();
-        lifetime.StopApplication();
-    }
 
-    private async Task Setup()
-    {
-        _definition = await pageController.GetGameDefinition();
-        _graph = factory.CreateGraph(_definition);
-        solution.SideLength = _definition.SideLength;
-        solution.Colors = _definition.Colors;
-        solution.CellColors = _definition.CellColors;
-    }
+        int iteration = 0;
+        int maxIterations = 1000;
+        while (Search() && iteration < maxIterations)
+        {
+            iteration++;
+        }
 
-    private async Task SolveAndPublishResult()
-    {
-        Solve();
-        await publisher.PublishSolution(solution);
-        logger.LogInformation("Solution found: {Solution}", solution.ToJson());
-        return;
-    }
+        var unsatisfied = graph.Cells.Select(c => c.Id);
+        var queens = graph.Queens.Select(c => c.Id);
+        var removed = graph.Removed.Select(c => c.Id);
+
+        bool solved =
+            !unsatisfied.Any() &&
+            queens.Count() == definition.SideLength &&
+            removed.Count() == definition.CellColors.Count - definition.SideLength;
+
+        if (solved)
+        {
+            logger.WriteInformation($"Solution found in {iteration} iterations");
+            logger.WriteInformation($"Queens: {string.Join(", ", queens)}");
+        }
+        else
+        {
+            logger.LogWarning("Failed to find a solution in {Iterations} iterations", iteration);
+            logger.LogWarning("Unsatisfied cells: {Unsatisfied}", string.Join(", ", unsatisfied));
+            logger.LogWarning("Queens: {Queens}", string.Join(", ", queens));
+            logger.LogWarning("Removed: {Removed}", string.Join(", ", removed));
+        }
+
+    });
 
     private bool Search()
     {
-        foreach (var row in _graph.Rows)
+        foreach (var row in graph.Rows)
             if (row.LocalSearch())
                 return true;
 
-        foreach (var col in _graph.Columns)
+        foreach (var col in graph.Columns)
             if (col.LocalSearch())
                 return true;
 
-        foreach (var color in _graph.Colors)
+        foreach (var color in graph.Colors)
             if (color.LocalSearch())
                 return true;
 
-        foreach (var colorCombination in _graph.Colors.Combinations())
+        foreach (var colorCombination in graph.Colors.Combinations())
         {
 
             bool trimmed = false;
@@ -88,26 +91,6 @@ internal sealed class Solver(
         }
 
         return false;
-    }
-
-    private void Solve()
-    {
-
-        int iteration = 0;
-        int maxIterations = 1000;
-        while (Search() && iteration < maxIterations)
-        {
-            iteration++;
-        }
-
-        var unsatisfied = _graph.Cells.Select(c => c.Id).ToArray();
-        var queens = _graph.Queens.Select(c => c.Id).ToArray();
-        var removed = _graph.Removed.Select(c => c.Id).ToArray();
-
-        logger.LogInformation("Cells with queens: {Cells}", string.Join(", ", queens));
-        logger.LogInformation("Cells removed: {Cells}", string.Join(", ", removed));
-        logger.LogInformation("Cells unsatisfied: {Cells}", string.Join(", ", unsatisfied));
-
     }
 
 }

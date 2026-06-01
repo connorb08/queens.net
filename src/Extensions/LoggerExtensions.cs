@@ -8,6 +8,8 @@ internal static partial class LoggerExtensions
 
     private static class Events
     {
+        public const int WriteInformation = 10;
+
         public const int AnalyzeGroup = 50;
 
         public const int RemoveCell = 99;
@@ -23,11 +25,11 @@ internal static partial class LoggerExtensions
         }
         internal void PlaceQueen(int cellId, string reason) => LogMessages.PlaceQueen(logger, cellId, reason);
         internal void PlaceCross(int cellId, string reason) => LogMessages.RemoveCell(logger, cellId, reason);
+        internal void WriteInformation(string message) => LogMessages.WriteInformation(logger, message);
     }
 
     private static partial class LogMessages
     {
-
         [LoggerMessage(
             Level = LogLevel.Trace,
             EventId = Events.AnalyzeGroup,
@@ -51,5 +53,13 @@ internal static partial class LoggerExtensions
             Message = "Removing Cell({CellId}): {Reason}"
         )]
         public static partial void RemoveCell(ILogger logger, int cellId, string reason);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            EventId = Events.WriteInformation,
+            EventName = nameof(WriteInformation),
+            Message = "{Message}"
+        )]
+        public static partial void WriteInformation(ILogger logger, string message);
     }
 }

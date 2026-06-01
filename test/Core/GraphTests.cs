@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using Queens.Core;
-using Queens.Data;
+using Queens.Models;
 using Queens.Services;
 
 namespace Tests.Core;
@@ -55,7 +55,7 @@ public class GraphTests
     public void GraphRows_ShouldNotIterate_WhenSatisified()
     {
 
-        IGraph graph = _factory.CreateGraph(_definition);
+        IGraph graph = _factory.CreateGraph();
 
         foreach (var row in graph.Rows)
         {

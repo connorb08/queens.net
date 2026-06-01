@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using Queens.Core;
-using Queens.Data;
+using Queens.Models;
 using Queens.Services;
 namespace Tests.Core;
 
@@ -54,7 +54,7 @@ public class GraphTestData : TheoryData<IGraph, Dictionary<int, int[]>>
 
     public GraphTestData()
     {
-        Add(_factory.CreateGraph(_definition), new Dictionary<int, int[]>
+        Add(_factory.CreateGraph(), new Dictionary<int, int[]>
         {
             { 0, [1, 2, 3, 4, 5, 8, 12] },
             { 1, [0, 2, 3, 4, 5, 6, 9, 13] },

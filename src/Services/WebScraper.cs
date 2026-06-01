@@ -3,14 +3,9 @@ using System.Text.RegularExpressions;
 
 using Microsoft.Playwright;
 
-using Queens.Data;
+using Queens.Models.Database;
 
-namespace Queens.Controllers;
-
-internal interface IPageController : IAsyncDisposable
-{
-    public Task<GameDefinition> GetGameDefinition();
-}
+namespace Queens.Services;
 
 internal static partial class RegexPatterns
 {
@@ -21,10 +16,10 @@ internal static partial class RegexPatterns
     internal static partial Regex CellColorIdRegex();
 }
 
-internal sealed class PageController(ILogger<PageController>? logger, IConfig config) : IPageController
+internal sealed class WebScraper(ILogger<WebScraper>? logger, IConfig config, Definition definition) : IAsyncDisposable
 {
 
-    private readonly ILogger<PageController>? _logger = logger;
+    private readonly ILogger<WebScraper>? _logger = logger;
     private readonly Regex _ariaLabelRegex = RegexPatterns.AriaLabelRegex();
     private readonly Regex _cellColorIdRegex = RegexPatterns.CellColorIdRegex();
     private bool _disposed;
@@ -33,11 +28,11 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
     private IBrowserContext _context = null!;
     private IPage _page = null!;
 
-    public async Task<GameDefinition> GetGameDefinition()
+    public async Task LoadGameDefinition()
     {
         await LaunchBrowserAsync();
         await StartGameAsync();
-        return await ParseGameDefinitionAsync();
+        await ParseGameDefinitionAsync();
     }
 
     private async Task LaunchBrowserAsync()
@@ -45,7 +40,6 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
         _playwright = await Playwright.CreateAsync();
         _browser = await _playwright.Chromium.LaunchAsync(new()
         {
-            // ExecutablePath = "/usr/bin/chromium-browser",
             Headless = config.Browser.Headless,
             Args = [
                 "--no-sandbox",
@@ -86,7 +80,7 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
                 .ClickAsync();
     }
 
-    private async Task<GameDefinition> ParseGameDefinitionAsync()
+    private async Task ParseGameDefinitionAsync()
     {
         var tableCells = await _page.QuerySelectorAllAsync("div.queens-cell-with-border");
         var colors = new ConcurrentDictionary<int, ColorData>();
@@ -117,14 +111,11 @@ internal sealed class PageController(ILogger<PageController>? logger, IConfig co
             })
         );
 
-        GameDefinition state = new()
-        {
-            SideLength = (ushort)Math.Sqrt(cellsInfo.Length),
-            Colors = [.. colors.Values],
-            CellColors = [.. cellsInfo.OrderBy(c => c.cellId).Select(c => c.colorId)]
-        };
+        definition.SideLength = (ushort)Math.Sqrt(cellsInfo.Length);
+        definition.Colors = [.. colors.Values];
+        definition.CellColors = [.. cellsInfo.OrderBy(c => c.cellId).Select(c => c.colorId)];
 
-        return state;
+        return;
     }
 
     public async ValueTask DisposeAsync()

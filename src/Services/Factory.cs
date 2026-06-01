@@ -2,24 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Queens.Core;
 using Queens.Core.Variables;
-using Queens.Data;
+using Queens.Models.Database;
 
 namespace Queens.Services;
 
-public interface IFactory
+public class Factory(IServiceProvider serviceProvider)
 {
-    public ICellGroup CreateRow(int id);
-    public ICellGroup CreateColumn(int id);
-    public ICellGroup CreateColor(int id, string colorName);
-    public IGraph CreateGraph(GameDefinition definition);
-    public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color);
-}
-
-public class Factory(IServiceProvider serviceProvider) : IFactory
-{
-    public IGraph CreateGraph(GameDefinition definition) =>
-        new Graph(serviceProvider.GetRequiredService<ILogger<IGraph>>(), this, definition);
-
     public ICell CreateCell(int id, ICellGroup row, ICellGroup column, ICellGroup color)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<Cell>>();

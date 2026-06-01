@@ -13,7 +13,7 @@ variable "cloudflare_account_id" {
   sensitive = true
 }
 
-variable "cloudflare_queue_id" {
+variable "cloudflare_database_id" {
   type      = string
   sensitive = true
 }

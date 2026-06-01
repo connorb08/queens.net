@@ -29,20 +29,14 @@ public class Program
             Sources = {
                 new JsonConfigurationSource
                 {
-                    Path = "appsettings.json",
+                    Path = $"appsettings.json",
                     Optional = false,
                     ReloadOnChange = true,
                 },
                 new JsonConfigurationSource
                 {
                     Path = $"appsettings.{environment}.json",
-                    Optional = true,
-                    ReloadOnChange = true,
-                },
-                new JsonConfigurationSource
-                {
-                    Path = $"secrets.json",
-                    Optional = true,
+                    Optional = false,
                     ReloadOnChange = true,
                 },
                 new EnvironmentVariablesConfigurationSource(),

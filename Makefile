@@ -1,4 +1,5 @@
-# Basic Makefile with common tasks for a .NET project, Docker, and Terraform.
+-include .env
+export
 
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
@@ -22,6 +23,7 @@ DOTNET      := dotnet
 # Docker configuration
 DOCKER     := docker
 DOCKERFILE ?= ./Dockerfile
+PLATFORM   ?= linux/arm64
 IMAGE_NAME ?= queens.net
 IMAGE_TAG  ?= latest
 IMAGE      := $(IMAGE_NAME):$(IMAGE_TAG)
@@ -104,23 +106,27 @@ format: ## Format code (requires dotnet-format)
 
 docker-build: ## Build Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) build -t $(IMAGE) -f $(DOCKERFILE) .
+	$(DOCKER) build --platform $(PLATFORM) --provenance=false -t $(IMAGE) -f $(DOCKERFILE) .
 
 docker-tag: docker-build
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) tag "$(IMAGE):latest" "$(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest"
+	$(DOCKER) tag "$(IMAGE)" "$(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest"
 
 docker-run: ## Run Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) run --env-file .env --rm -it $(IMAGE)
+	$(DOCKER) run --platform $(PLATFORM) --env-file .env --rm -it $(IMAGE)
 
 docker-attach: ## Run Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) run --env-file .env --rm -it $(IMAGE) bash
+	$(DOCKER) run --platform $(PLATFORM) --env-file .env --rm -it $(IMAGE) bash
 
 docker-push: docker-tag
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
 	$(DOCKER) push $(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest
+
+docker-login:
+	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
+	aws ecr get-login-password | $(DOCKER) login --username AWS --password-stdin $(AWS_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
 
 tf-init: ## Terraform init in $(TF_DIR)
 	@command -v $(TF) >/dev/null || { echo "terraform not found on PATH"; exit 1; }
@@ -145,3 +151,6 @@ tf-destroy: ## Terraform destroy
 
 deploy: docker-push
 	aws lambda update-function-code --function-name queens --image-uri $(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest
+
+invoke-lambda:
+	aws lambda invoke --function-name queens output.json
