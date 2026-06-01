@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../playwright/Browser.csproj" />
+    <ProjectReference Include="../Browser/Browser.csproj" />
   </ItemGroup>
 
   <ItemGroup>

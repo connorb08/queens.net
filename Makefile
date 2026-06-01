@@ -114,11 +114,11 @@ docker-tag: docker-build
 
 docker-run: ## Run Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) run --platform $(PLATFORM) --env-file .env --rm -it $(IMAGE)
+	$(DOCKER) run --platform $(PLATFORM) --env-file .env --network host --rm -it $(IMAGE)
 
 docker-attach: ## Run Docker image
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
-	$(DOCKER) run --platform $(PLATFORM) --env-file .env --rm -it $(IMAGE) bash
+	$(DOCKER) run --platform $(PLATFORM) --env-file .env --network host --rm -it $(IMAGE) bash
 
 docker-push: docker-tag
 	@command -v $(DOCKER) >/dev/null || { echo "docker not found on PATH"; exit 1; }
@@ -153,4 +153,4 @@ deploy: docker-push
 	aws lambda update-function-code --function-name queens --image-uri $(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest
 
 invoke-lambda:
-	aws lambda invoke --function-name queens output.json
+	aws lambda invoke --function-name queens --payload '{}' output.json

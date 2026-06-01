@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Queens.csproj" />
+    <ProjectReference Include="..\Queens\Queens.csproj" />
   </ItemGroup>
 
 </Project>
