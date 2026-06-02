@@ -21,7 +21,11 @@ public sealed class Row(ILogger<Row> logger, int id) : CellGroup(logger, id)
         {
             Color color = Colors.First();
             logger.LogInformation("All cells in Row {Id} are of color {Color}", Id, color.Id);
-            return color.FilterOut(c => c.Row != this, "Reason-377593455");
+            bool trimmed = color.FilterOut(c => c.Row != this, "Reason-377593455");
+            if (trimmed)
+            {
+                return true;
+            }
         }
 
         return RemoveSharedEdges();

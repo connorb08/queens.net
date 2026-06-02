@@ -4,9 +4,9 @@ export
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-SRC_DIR := ./src
-PLAYWRIGHT_DIR := ./playwright
-TEST_DIR := ./test
+SRC_DIR := ./Queens
+PLAYWRIGHT_DIR := ./Browser
+TEST_DIR := ./Tests
 
 # .NET configuration
 SLN         := ./queens.net.sln

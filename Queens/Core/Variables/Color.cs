@@ -22,13 +22,21 @@ public sealed class Color(ILogger<Color> logger, int id, string colorName) : Cel
         if (Rows.Count() == 1)
         {
             Row row = Rows.First();
-            return row.FilterOut(c => c.Color != this, $"This row must be {ColorName}");
+            bool trimmed = row.FilterOut(c => c.Color != this, $"This row must be {ColorName}");
+            if (trimmed)
+            {
+                return true;
+            }
         }
 
         if (Columns.Count() == 1)
         {
             Column column = Columns.First();
-            return column.FilterOut(c => c.Color != this, $"This column must be {ColorName}");
+            bool trimmed = column.FilterOut(c => c.Color != this, $"This column must be {ColorName}");
+            if (trimmed)
+            {
+                return true;
+            }
         }
 
         return RemoveSharedEdges();

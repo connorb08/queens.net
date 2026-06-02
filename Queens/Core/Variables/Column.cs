@@ -21,7 +21,11 @@ public sealed class Column(ILogger<Column> logger, int id) : CellGroup(logger, i
         if (Colors.Count() == 1)
         {
             Color color = Colors.First();
-            return color.FilterOut(c => c.Column != this, $"Queen for {color.ColorName} must be in Column {Id}");
+            bool trimmed = color.FilterOut(c => c.Column != this, $"Queen for {color.ColorName} must be in Column {Id}");
+            if (trimmed)
+            {
+                return true;
+            }
         }
 
         return RemoveSharedEdges();
