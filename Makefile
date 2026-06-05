@@ -153,4 +153,4 @@ deploy: docker-push
 	aws lambda update-function-code --function-name queens --image-uri $(AWS_ID).dkr.ecr.us-east-2.amazonaws.com/queens:latest
 
 invoke-lambda:
-	aws lambda invoke --function-name queens --payload '{}' output.json
+	aws lambda invoke --function-name queens --payload '{}' /tmp/response.json
